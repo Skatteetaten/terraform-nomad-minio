@@ -1,3 +1,4 @@
+# Nomad
 variable "nomad_provider_address" {
   type        = string
   description = "Nomad address"
@@ -14,6 +15,7 @@ variable "nomad_namespace" {
   default     = "default"
 }
 
+# Minio
 variable "minio_service_name" {
   type        = string
   description = "Minio service name"
@@ -36,12 +38,6 @@ variable "minio_container_image" {
   type        = string
   description = "Minio server image"
   default     = "minio/minio:latest"
-}
-
-variable "mc_container_image" {
-  type        = string
-  description = "Minio client image"
-  default     = "minio/mc:latest"
 }
 
 variable "minio_container_port" {
@@ -71,5 +67,24 @@ variable "minio_buckets" {
 variable "minio_container_environment_variables" {
   type        = list(string)
   description = "Minio server environment variables"
+  default     = []
+}
+
+# MC
+variable "mc_service_name" {
+  type        = string
+  description = "Minio client service name"
+  default     = "mc"
+}
+
+variable "mc_container_image" {
+  type        = string
+  description = "Minio client image"
+  default     = "minio/mc:latest"
+}
+
+variable "mc_container_environment_variables" {
+  type        = list(string)
+  description = "Minio client environment variables"
   default     = []
 }

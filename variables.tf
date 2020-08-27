@@ -16,55 +16,43 @@ variable "nomad_namespace" {
 }
 
 # Minio
-variable "minio_service_name" {
+variable "service_name" {
   type        = string
   description = "Minio service name"
   default     = "minio"
 }
 
-variable "minio_host" {
+variable "host" {
   type        = string
   description = "Minio host"
   default     = "127.0.0.1"
 }
 
-variable "minio_port" {
+variable "port" {
   type        = number
   description = "Minio port"
   default     = 9000
 }
 
-variable "minio_container_image" {
+variable "container_image" {
   type        = string
   description = "Minio server image"
   default     = "minio/minio:latest"
 }
 
-variable "minio_container_port" {
-  type        = number
-  description = "Minio server listening port"
-  default     = 9000
-}
-
-variable "minio_access_key" {
+variable "access_key" {
   type        = string
   description = "Minio access key"
   default     = "minio"
 }
 
-variable "minio_secret_key" {
+variable "secret_key" {
   type        = string
   description = "Minio secret key"
   default     = "minio123"
 }
 
-variable "minio_buckets" {
-  type        = list(string)
-  description = "List of buckets to create on startup"
-  default     = ["bucket-1", "bucket-2"]
-}
-
-variable "minio_container_environment_variables" {
+variable "container_environment_variables" {
   type        = list(string)
   description = "Minio server environment variables"
   default     = []
@@ -87,4 +75,10 @@ variable "mc_container_environment_variables" {
   type        = list(string)
   description = "Minio client environment variables"
   default     = []
+}
+
+variable "buckets" {
+  type        = list(string)
+  description = "List of buckets to create on startup"
+  default     = ["bucket-1", "bucket-2"]
 }

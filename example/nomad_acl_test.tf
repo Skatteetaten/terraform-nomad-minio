@@ -9,4 +9,3 @@ provider "nomad" {
   # Add a secret_id if ACLs are enabled in nomad
   secret_id = var.nomad_acl ? data.vault_generic_secret.nomad_secret_id[0].data.secret_id : null
 }
-

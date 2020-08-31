@@ -16,6 +16,8 @@
         TEST_DOWNLOAD_BUILD_ARGUMENT: https://nrk.no
     source: build
 
+# NB! Folder /vagrant is mounted to Minio
+# Folder `dev` is going to be a bucket name
 - name: Create tmp if it does not exist
   file:
     path: /vagrant/dev/tmp
@@ -28,5 +30,6 @@
   docker_image:
     name: docker_image
     tag: local
+    http_timeout: 120
     archive_path: /vagrant/dev/tmp/docker_image.tar
     source: local

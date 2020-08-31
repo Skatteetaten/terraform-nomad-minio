@@ -1,34 +1,29 @@
 <!-- markdownlint-disable MD041 -->
 <p align="center"><a href="https://github.com/fredrikhgrelland/vagrant-hashistack-template" alt="Built on"><img src="https://img.shields.io/badge/Built%20from%20template-Vagrant--hashistack--template-blue?style=for-the-badge&logo=github"/></a><p align="center"><a href="https://github.com/fredrikhgrelland/vagrant-hashistack" alt="Built on"><img src="https://img.shields.io/badge/Powered%20by%20-Vagrant--hashistack-orange?style=for-the-badge&logo=vagrant"/></a></p></p>
 
-# Terraform-nomad-minio
+> :warning: The text under headlines are examples, and should be removed.
+>
+> :warning: Remove this line and the one above!
+
+# Terraform-module name
 
 ## Compatibility
-|Software|OSS Version|Enterprise Version|
-|:--|:--|:--|
-|Terraform|0.13.0 or newer||
-|Consul|1.8.3 or newer|1.8.3 or newer|
-|Vault|1.5.2.1 or newer|1.5.2.1 or newer|
-|Nomad|0.12.3 or newer|0.12.3 or newer|
+List of compatible versions. E.g.
+1. Terraform 0.12.2 or newer
+2. Nomad 0.12 or newer
 
 ## Usage
 
-```text
-make up
-```
-
 ### Requirements
-
-#### Required modules
-
-
 #### Required software
-- [GNU make](https://man7.org/linux/man-pages/man1/make.1.html)
+1. Software 1
+2. Software 2
 
 #### Other
+Any other requirements. E.g. "This needs to be run on a Debian system"
 
 ### Providers
-- [Nomad](https://registry.terraform.io/providers/hashicorp/nomad/latest/docs)
+A description of the providers that the module uses. E.g. "This module uses the [Nomad](https://registry.terraform.io/providers/hashicorp/nomad/latest/docs) and [Vault](https://registry.terraform.io/providers/hashicorp/vault/latest/docs) providers"
 
 ## Inputs
 |Name     |Description     |Type    |Default |Required  |

@@ -4,7 +4,7 @@
 
 ## Changed
 
-- Sync origin template #10 
+- Sync origin template #10
 - Rename vars in variables.tf
 
 ### Added

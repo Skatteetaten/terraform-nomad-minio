@@ -1,0 +1,1 @@
+{"description": "Another document", "foo": {"bar": "cure", "quux": "this is quux", "level1": {"l2string": "some string", "l2struct": {"level3": "deep lvl3"}}}, "wibble": "123", "wobble": [{"entry": 7, "EntryDetails": {"details1": "some details at 1", "details2": 777}}]}

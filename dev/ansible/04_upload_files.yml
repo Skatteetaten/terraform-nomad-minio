@@ -1,0 +1,55 @@
+- name: Start local proxy on port 9999 to minio service
+  shell: nohup consul connect proxy -service minio-local -upstream minio:9999 -log-level debug </dev/null >/dev/null 2>&1 &
+  register: test_output
+  tags: example-upload
+
+# To quickly verify that proxy available (without any credentials)
+# https://github.com/minio/minio/issues/4851#issuecomment-324543717
+- name: Minio curl example. Verify that proxy to minio available
+  uri:
+    url: http://127.0.0.1:9999
+    status_code: 403
+  register: curl_output
+  until: curl_output.status == 403
+  retries: 10
+  delay: 5
+  tags: example-upload
+
+- name: Debug curl_output
+  debug:
+    msg: "{{curl_output}}"
+  tags: example-upload
+
+- name: Add minio config
+  shell: mc config host add minio-container http://127.0.0.1:9999 minio minio123
+  tags: example-upload
+
+- name: Upload csv file to `/one/some/prefix/iris-file.csv`
+  shell: mc cp ../../example/resources/data/csv/iris.csv minio-container/one/some/prefix/iris-file.csv
+  register: csv_copy
+  retries: 10
+  delay: 5
+  until: csv_copy.rc == 0
+  tags: example-upload
+
+- name: Verify that file exist on target `/one/some/prefix/iris-file.csv`
+  shell: mc cat minio-container/one/some/prefix/iris-file.csv
+  failed_when: csv_copy.rc == 1
+  tags: example-upload
+
+- name: Upload `json` examples to target `/one/prefix/json/`
+  shell: mc cp --recursive ../../example/resources/data/ minio-container/one/data/
+  register: batch_upload
+  tags: example-upload
+
+- name: Verify folder `proto-message/` is uploaded
+  shell:   mc ls minio-container/one/data --json | jq -s . | jq ".[].key" | grep "proto-message/"
+  register: uploaded
+  retries: 10
+  delay: 5
+  until: uploaded.rc == 0
+  tags: example-upload
+
+
+
+

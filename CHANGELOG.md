@@ -1,8 +1,16 @@
 # Changelog
 
-## [0.0.2 UNRELEASED]
+## [0.0.3 UNRELEASED]
 
-## Changed
+### Added
+
+- Tests #4
+- Documentation #3
+- File/directories upload examples #11
+
+## [0.0.2]
+
+### Changed
 
 - Sync origin template #10
 - Rename vars in variables.tf

@@ -1,0 +1,65 @@
+- name: Minio healthchecks pass
+  uri:
+    url: http://localhost:8500/v1/health/checks/minio?filter={{ '(Status=="passing")' | urlencode }}
+    method: GET
+    return_content: yes
+    status_code: 200
+    body_format: json
+  register: result_minio
+  retries: 15
+  delay: 15
+  until: result_minio.json | length == 2
+  tags: test
+
+# https://unix.stackexchange.com/a/148698
+- name: Start local proxy on port 9999 to minio service
+  shell: nohup consul connect proxy -service minio-local -upstream minio:9999 -log-level debug </dev/null >/dev/null 2>&1 &
+  register: test_output
+  tags: test
+
+- name: Debug test_output
+  debug:
+    msg: "{{ test_output }}"
+  tags: test
+
+- name: Register proxy PID_ID
+  shell: lsof -t -i:9999
+  register: PROXY_PID_ID # kill later with smth like `sudo kill -TERM 4635`
+  tags: test
+
+# To quickly verify that proxy available (without any credentials)
+# https://github.com/minio/minio/issues/4851#issuecomment-324543717
+- name: Minio curl example. Verify that proxy to minio available
+  uri:
+    url: http://127.0.0.1:9999
+    status_code: 403
+  register: curl_output
+  until: curl_output.status == 403
+  retries: 10
+  delay: 5
+  tags: test
+
+- name: Debug curl_output
+  debug:
+    msg: "{{curl_output}}"
+  tags: test
+
+- name: Add minio config
+  shell: mc config host add minio-container http://127.0.0.1:9999 minio minio123
+  tags: test
+
+- name: Verify buckets `one/` exists
+  shell: mc ls minio-container --json | jq -s . | jq .[] | grep "one/"
+  register: bucket_output_1
+  retries: 10
+  delay: 5
+  until: bucket_output_1.rc == 0
+  tags: test
+
+- name: Verify buckets `two/` exists
+  shell: mc ls minio-container --json | jq -s . | jq .[] | grep "two/"
+  register: bucket_output_2
+  retries: 10
+  delay: 5
+  until: bucket_output_2.rc == 0
+  tags: test

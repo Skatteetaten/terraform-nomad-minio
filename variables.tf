@@ -36,7 +36,7 @@ variable "port" {
 
 variable "container_image" {
   type        = string
-  description = "Minio server image"
+  description = "Minio docker image"
   default     = "minio/minio:latest"
 }
 
@@ -54,7 +54,7 @@ variable "secret_key" {
 
 variable "container_environment_variables" {
   type        = list(string)
-  description = "Minio server environment variables"
+  description = "Additional minio container environment variables"
   default     = []
 }
 
@@ -67,7 +67,7 @@ variable "mc_service_name" {
 
 variable "mc_container_image" {
   type        = string
-  description = "Minio client image"
+  description = "Minio client docker image"
   default     = "minio/mc:latest"
 }
 
@@ -80,5 +80,5 @@ variable "mc_container_environment_variables" {
 variable "buckets" {
   type        = list(string)
   description = "List of buckets to create on startup"
-  default     = ["bucket-1", "bucket-2"]
+  default     = []
 }

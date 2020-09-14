@@ -12,6 +12,7 @@
     build:
       path: /vagrant/docker
       pull: false
+      http_timeout: 120
       args:
         TEST_DOWNLOAD_BUILD_ARGUMENT: https://nrk.no
     source: build
@@ -30,6 +31,5 @@
   docker_image:
     name: docker_image
     tag: local
-    http_timeout: 120
     archive_path: /vagrant/dev/tmp/docker_image.tar
     source: local

@@ -11,3 +11,4 @@
 
 ### Fixed
 
+- links in documentation #5

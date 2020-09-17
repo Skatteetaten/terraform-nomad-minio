@@ -1,0 +1,62 @@
+- name: set variables
+  set_fact:
+    download_base_url: "https://github.com/sethvargo/vault-secrets-gen/releases/download"
+    plugin_name: "vault-secrets-gen"
+    plugin_version: "0.1.1"
+    vault_addr: "http://127.0.0.1:8200"
+    vault_token: "master"
+
+- name: Check if vault secret is enabled at path /gen
+  shell:
+    cmd: vault secrets list -format json  | jq -s . | jq .[] | grep "gen/" | wc -l
+  register: enabled
+
+- name: Hashistack - Download SHA256UMS for {{ plugin_name }}
+  get_url:
+    url: "{{ download_base_url }}/v{{ plugin_version }}/{{ plugin_name }}_{{ plugin_version }}_SHA256SUMS"
+    dest: "/tmp"
+  when: enabled.stdout == "0"
+
+- name: Vault - Download SHA256UMS signatures for {{ plugin_name }}
+  get_url:
+    url: "{{ download_base_url }}/v{{ plugin_version }}/{{ plugin_name }}_{{ plugin_version }}_SHA256SUMS.sig"
+    dest: "/tmp"
+  when: enabled.stdout == "0"
+
+- name: Vault - Extract checksum from SHA256SUMS for {{ plugin_name }}
+  shell: |
+    cat /tmp/{{ plugin_name }}_{{ plugin_version }}_SHA256SUMS | grep {{ plugin_name }}_{{ plugin_version }}_linux_amd64.zip | awk '{print $1}'
+  register: extract_checksum_vault_secrets_gen
+  when: enabled.stdout == "0"
+
+- name: Vault - download secrets generator plugin
+  get_url:
+    url: "{{ download_base_url }}/v{{ plugin_version }}/{{ plugin_name }}_{{ plugin_version }}_linux_amd64.zip"
+    dest: "/tmp/{{ plugin_name }}.zip"
+    checksum: "sha256:{{extract_checksum_vault_secrets_gen.stdout}}"
+    mode: "u=rx,g=rx,o=rx"
+  when: enabled.stdout == "0"
+
+- name: Vault - create plugins dir
+  file:
+    path: /etc/vault.d/plugins
+    state: directory
+    mode: "u=rwx,g=rx,o=rx"
+  when: enabled.stdout == "0"
+
+- name: Vault - unpack secrets generator plugin
+  unarchive:
+    src: /tmp/{{ plugin_name }}.zip
+    dest: /etc/vault.d/plugins
+    remote_src: yes
+  when: enabled.stdout == "0"
+
+- name: Enable vault secrets engine
+  shell: |
+    export SHA256=$(shasum -a 256 "/etc/vault.d/plugins/{{ plugin_name }}_v{{ plugin_version }}" | cut -d' ' -f1)
+    vault write sys/plugins/catalog/secrets-gen sha_256=$SHA256 command="{{ plugin_name }}_v{{ plugin_version }}"
+    vault secrets enable -path='gen' -plugin-name='secrets-gen' plugin
+  when: enabled.stdout == "0"
+  environment:
+    VAULT_ADDR: "{{ vault_addr }}"
+    VAULT_TOKEN: "{{ vault_token }}"

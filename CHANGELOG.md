@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.1.0 UNRELEASED]
+
+### Added
+
+- Use vault to generate secrets for minio using kv
+
 ## [0.0.3]
 
 ### Added

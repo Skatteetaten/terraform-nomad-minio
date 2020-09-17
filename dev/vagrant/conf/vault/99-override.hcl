@@ -1,0 +1,1 @@
+plugin_directory = "/etc/vault.d/plugins"

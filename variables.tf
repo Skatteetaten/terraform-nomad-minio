@@ -43,13 +43,11 @@ variable "container_image" {
 variable "access_key" {
   type        = string
   description = "Minio access key"
-  default     = "minio"
 }
 
 variable "secret_key" {
   type        = string
   description = "Minio secret key"
-  default     = "minio123"
 }
 
 variable "container_environment_variables" {

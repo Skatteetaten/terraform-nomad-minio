@@ -10,7 +10,7 @@ install:
 	 mkdir -p tmp;(cd tmp; git clone --depth=1 https://github.com/fredrikhgrelland/vagrant-hashistack.git; cd vagrant-hashistack; make install); rm -rf tmp/vagrant-hashistack
 
 check_for_consul_binary:
-ifeq (, $(shell which consule))
+ifeq (, $(shell which consul))
 	$(error "No consul binary in $(PATH), download the consul binary from here :\n https://www.consul.io/downloads\n\n' && exit 2")
 endif
 

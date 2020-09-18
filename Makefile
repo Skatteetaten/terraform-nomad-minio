@@ -47,7 +47,7 @@ destroy-box:
 	vagrant destroy -f
 
 remove-tmp:
-	rm -rf ./tmp
+    rm -rf ./tmp
     rm -rf ./.vagrant
     rm -rf ./.minio.sys
     rm -rf ./example/.terraform

@@ -9,6 +9,7 @@
 
 ### Added
 
+- Added check for consul binary in the `Makefile`
 
 ### Fixed
 

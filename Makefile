@@ -9,6 +9,11 @@ export PATH := $(shell pwd)/tmp:$(PATH)
 install:
 	 mkdir -p tmp;(cd tmp; git clone --depth=1 https://github.com/fredrikhgrelland/vagrant-hashistack.git; cd vagrant-hashistack; make install); rm -rf tmp/vagrant-hashistack
 
+check_for_consul_binary:
+ifeq (, $(shell which consule))
+	$(error "No consul binary in $(PATH), download the consul binary from here :\n https://www.consul.io/downloads\n\n' && exit 2")
+endif
+
 #### Development ####
 # start commands
 dev: update-box custom_ca
@@ -54,8 +59,3 @@ clean: destroy-box remove-tmp
 # helper commands
 update-box:
 	@SSL_CERT_FILE=${SSL_CERT_FILE} CURL_CA_BUNDLE=${CURL_CA_BUNDLE} vagrant box update || (echo '\n\nIf you get an SSL error you might be behind a transparent proxy. \nMore info https://github.com/fredrikhgrelland/vagrant-hashistack/blob/master/README.md#proxy\n\n' && exit 2)
-
-check_for_consul_binary:
-ifeq (, $(shell which consule))
-	$(error "No consul binary in $(PATH), download the consul binary from here :\n https://www.consul.io/downloads\n\n' && exit 2")
-endif

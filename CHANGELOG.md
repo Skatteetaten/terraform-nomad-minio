@@ -9,7 +9,7 @@
 
 ### Added
 
-- Added check for consul binary in the `Makefile` #20
+- Added check for consul and terraform binary in the `Makefile` #20
 
 ### Fixed
 

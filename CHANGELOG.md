@@ -10,6 +10,7 @@
 
 ### Added
 
+- Added check for consul and terraform binary in the `Makefile` #20
 
 ### Fixed
 

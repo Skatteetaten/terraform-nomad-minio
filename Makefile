@@ -9,6 +9,16 @@ export PATH := $(shell pwd)/tmp:$(PATH)
 install:
 	 mkdir -p tmp;(cd tmp; git clone --depth=1 https://github.com/fredrikhgrelland/vagrant-hashistack.git; cd vagrant-hashistack; make install); rm -rf tmp/vagrant-hashistack
 
+check_for_consul_binary:
+ifeq (, $(shell which consul))
+	$(error "No consul binary in $(PATH), download the consul binary from here :\n https://www.consul.io/downloads\n\n' && exit 2")
+endif
+
+check_for_terraform_binary:
+ifeq (, $(shell which terraform))
+	$(error "No terraform binary in $(PATH), download the terraform binary from here :\n https://www.terraform.io/downloads.html\n\n' && exit 2")
+endif
+
 #### Development ####
 # start commands
 dev: update-box custom_ca

@@ -44,8 +44,18 @@
     msg: "{{curl_output}}"
   tags: test
 
+- name: Register access key
+  shell:
+    cmd: vault kv get -field='accessKey' secret/minio
+  register: access_key
+
+- name: Register secret key
+  shell:
+    cmd: vault kv get -field='secretKey' secret/minio
+  register: secret_key
+
 - name: Add minio config
-  shell: mc config host add minio-container http://127.0.0.1:9999 minio minio123
+  shell: mc config host add minio-container http://127.0.0.1:9999 {{ access_key.stdout }} {{ secret_key.stdout }}
   tags: test
 
 - name: Verify buckets `one/` exists

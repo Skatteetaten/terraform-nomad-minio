@@ -10,6 +10,7 @@
 
 ### Added
 
+- Added command that formats/prettify all `.tf`-files in directory #21
 - Added check for consul and terraform binary in the `Makefile` #20
 
 ### Fixed

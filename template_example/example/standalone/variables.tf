@@ -1,4 +1,4 @@
 variable "nomad_acl" {
-  type = bool
+  type        = bool
   description = "Nomad ACLs enabled/disabled"
 }

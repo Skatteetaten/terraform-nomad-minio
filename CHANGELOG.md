@@ -6,6 +6,7 @@
 ### Changed
 
 - trigger tests for template_example by condition #12
+- updated the make clean in makefile to remove more tmp files/folders #8
 
 ### Added
 

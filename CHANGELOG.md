@@ -12,6 +12,7 @@
 
 - Added command that formats/prettify all `.tf`-files in directory #21
 - Added check for consul and terraform binary in the `Makefile` #20
+- `Vault PKI` section to README
 
 ### Fixed
 

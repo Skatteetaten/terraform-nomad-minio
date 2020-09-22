@@ -45,6 +45,7 @@
       3. [Consul](#consul)
       4. [Vault](#vault)
          1. [Consul Secrets Engine](#consul-secrets-engine)
+         2. [Vault PKI](#vault-pki)
    2. [Vagrant Box Resources](#vagrant-box-resources)
 4. [Usage](#usage)
    1. [Commands](#commands)
@@ -250,6 +251,28 @@ vagrant ssh -c 'vault read consul/creds/admin-team'
 ```
 
 > :bulb: Tokens can be used to access UI (different access level depends on policy attached to the token)
+
+##### Vault PKI
+
+| default   | environment variable             |  value  |
+|:---------:|:---------------------------------|:-------:|
+|     x     | vault_pki                        |  true   |
+|           | vault_pki                        |  false  |
+
+[Vault PKI](https://www.vaultproject.io/docs/secrets/pki) will be enabled at `/pki`. A role called `default` is available to issue certificates.
+Issue certificates from terminal:
+```bash
+vault write pki/issue/default common_name="your_common_name"
+```
+or with the terraform resource [`vault_pki_secret_backend_cert](https://registry.terraform.io/providers/hashicorp/vault/latest/docs/resources/pki_secret_backend_cert):
+```hcl-terraform
+resource "vault_pki_secret_backend_cert" "app" {
+  backend = "pki"
+  name = "default"
+
+  common_name = "app.my.domain"
+}
+```
 
 ### Vagrant Box Resources
 If you get the error message `Dimension memory exhausted on 1 node` or `Dimension CPU exhausted on 1 node`, you might want to increase resources dedicated to your vagrant-box.

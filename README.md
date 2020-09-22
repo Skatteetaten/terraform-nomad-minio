@@ -305,7 +305,9 @@ There are several commands that help to run the vagrant-box:
 
 - `make update` downloads the newest version of the [vagrant-hashistack box](https://github.com/fredrikhgrelland/vagrant-hashistack/) from [vagrantcloud](https://vagrantcloud.com/fredrikhgrelland/hashistack).
 
-- `make template_example` runs the example in [template_example/](template_example)
+- `make template_example` runs the example in [template_example/](template_example).
+
+- `make pre-commit` this is a helper command that will run the github linter locally and formatt/prettify all the `.tf` files in the directory.
 
 > :bulb: For full info, check [`template/Makefile`](./Makefile).
 > :warning: Makefile commands are not idempotent in the context of vagrant-box.  You could face the error of port collisions. Most of the cases it could happen because of the vagrant box has already been running. Run `vagrant destroy -f` to destroy the box.

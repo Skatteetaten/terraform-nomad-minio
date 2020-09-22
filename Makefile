@@ -19,13 +19,15 @@ ifeq (, $(shell which terraform))
 	$(error "No terraform binary in $(PATH), download the terraform binary from here :\n https://www.terraform.io/downloads.html\n\n' && exit 2")
 endif
 
+check_for_docker_binary:
+ifeq (, $(shell which docker))
+	$(error "No docker binary in $(PATH), install docker from here :\n https://docs.docker.com/get-docker/\n\n' && exit 2")
+endif
+
 #### Development ####
 # start commands
 dev: update-box custom_ca
 	SSL_CERT_FILE=${SSL_CERT_FILE} CURL_CA_BUNDLE=${CURL_CA_BUNDLE} CUSTOM_CA=${CUSTOM_CA} ANSIBLE_ARGS='--skip-tags "test"' vagrant up --provision
-
-linter:
-	docker run -e RUN_LOCAL=true -v "${PWD}:/tmp/lint/" github/super-linter
 
 custom_ca:
 ifdef CUSTOM_CA
@@ -71,5 +73,6 @@ clean: destroy-box remove-tmp
 update-box:
 	@SSL_CERT_FILE=${SSL_CERT_FILE} CURL_CA_BUNDLE=${CURL_CA_BUNDLE} vagrant box update || (echo '\n\nIf you get an SSL error you might be behind a transparent proxy. \nMore info https://github.com/fredrikhgrelland/vagrant-hashistack/blob/master/README.md#proxy\n\n' && exit 2)
 
-prettify:
-	@terraform fmt -recursive && echo Trying to prettify all .tf files.
+pre-commit: check_for_docker_binary
+	docker run -e RUN_LOCAL=true -v "${PWD}:/tmp/lint/" github/super-linter
+	terraform fmt -recursive && echo "\e[32mTrying to prettify all .tf files.\e[0m"

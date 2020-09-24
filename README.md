@@ -43,6 +43,7 @@
       1. [Enterprise vs Open Source Software (OSS)](#enterprise-vs-open-source-software-oss)
       2. [Nomad](#nomad)
       3. [Consul](#consul)
+         1. [Enterprise - namespaces](#enterprise---namespaces)
       4. [Vault](#vault)
          1. [Consul Secrets Engine](#consul-secrets-engine)
          2. [Vault PKI](#vault-pki)
@@ -228,6 +229,27 @@ When ACLs are enabled in Nomad the bootstrap token will be available in vault un
 |           | consul_acl                       |  false  |
 |     x     | consul_acl_default_policy        |  allow  |
 |           | consul_acl_default_policy        |  deny   |
+
+##### Enterprise - Namespaces
+
+[Consul namespaces](https://www.consul.io/docs/enterprise/namespaces) feature is available in enterprise version only.
+The switches below will enable [consul_namespaces_test.yml](https://github.com/fredrikhgrelland/vagrant-hashistack/blob/master/ansible/tests/enterprise/consul_namespaces_test.yml)
+
+```text
+consul_enterprise=true
+consul_acl=true
+consul_acl_default_policy=deny
+```
+
+Consul will come up with two additional namespaces ["team1", "team2"] and *admin token for these namespaces.
+
+> :warning: Admin tokens use [builtin policy - Namespace Management](https://www.consul.io/docs/security/acl/acl-system#builtin-policies) with scope=global.
+
+References:
+- [Consul namespaces documentation](https://www.consul.io/docs/enterprise/namespaces)
+- [Consul http api documentation](https://www.consul.io/api-docs/namespaces)
+- [Consul cli documentation](https://www.consul.io/commands/namespace)
+- [Consul 1.7 - Namespaces: Simplifying Self-Service, Governance and Operations Across Teams](https://youtu.be/Ff6kLvKkJBE)
 
 #### Vault
 

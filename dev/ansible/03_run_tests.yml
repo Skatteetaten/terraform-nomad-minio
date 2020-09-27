@@ -77,12 +77,12 @@
 
 - name: Register access key
   shell:
-    cmd: vault kv get -field='accessKey' secret/minio
+    cmd: vault kv get -field='access_key' secret/minio
   register: access_key
 
 - name: Register secret key
   shell:
-    cmd: vault kv get -field='secretKey' secret/minio
+    cmd: vault kv get -field='secret_key' secret/minio
   register: secret_key
 
 - name: Add minio config

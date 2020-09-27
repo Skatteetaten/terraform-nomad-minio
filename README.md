@@ -49,8 +49,8 @@ Minio example instance has:
 | host | Minio host | string | "127.0.0.1" | yes |
 | port | Minio port | number | 9000 | yes |
 | container\_image | Minio docker image | string | "minio/minio:latest" | yes |
-| access\_key | Minio access key | string | "minio" | yes |
-| secret\_key | Minio secret key | string | "minio123" | yes |
+| access\_key | Minio access key | string | dynamically generated secrets with Vault  | yes |
+| secret\_key | Minio secret key | string | dynamically generated secrets with Vault | yes |
 | container\_environment\_variables | Additional minio container environment variables | list(string) | [] | no |
 | mc\_service\_name | Minio client service name | string | "mc" | yes |
 | mc\_container\_image | Minio client docker image | string | "minio/mc:latest" | yes |
@@ -81,8 +81,6 @@ module "minio" {
   host                            = "127.0.0.1"
   port                            = 9000
   container_image                 = "minio/minio:latest"
-  access_key                      = "minio"
-  secret_key                      = "minio123"
   container_environment_variables = ["SOME_VAR_N1=some-value"]
 
   # minio client
@@ -90,6 +88,18 @@ module "minio" {
   mc_container_image              = "minio/mc:latest"
   buckets                         = ["one", "two"]
 }
+```
+## Vault secrets
+The minio access_key and secret_key is generated and put in `/secret/minio` inside Vault.
+
+To get the username and password from Vault you can login to the [Vault-UI](http://localhost:8200/) with token `master` and reveal the username and password in `/secret/minio`.
+Alternatively, you can ssh into the vagrant box with `vagrant ssh`, and use the vault binary to get the access_key and secret_key. See the following commands:
+```sh
+# get access_key
+vault kv get -field='access_key' secret/minio
+
+# get secret_key
+vault kv get -field='secret_key' secret/minio
 ```
 
 ### Verifying setup

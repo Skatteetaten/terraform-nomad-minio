@@ -52,4 +52,5 @@ update-box:
 # consul-connect proxy to service
 # required binary `consul` https://releases.hashicorp.com/consul/
 proxy:
-	consul connect proxy -service minio-local -upstream minio:9000 -log-level debug
+	consul intention create -token=master minio-local minio
+	consul connect proxy -token master -service minio-local -upstream minio:9000 -log-level debug

@@ -1,3 +1,7 @@
+- name: set variable
+  set_fact:
+    consul_token: "master"
+
 - name: Minio healthchecks pass
   uri:
     url: http://localhost:8500/v1/health/checks/minio?filter={{ '(Status=="passing")' | urlencode }}
@@ -5,6 +9,23 @@
     return_content: yes
     status_code: 200
     body_format: json
+  when: not lookup('env', 'consul_acl') | bool
+  register: result_minio
+  retries: 15
+  delay: 15
+  until: result_minio.json | length == 2
+  tags: test
+
+- name: Minio healthchecks pass with token
+  uri:
+    url: http://localhost:8500/v1/health/checks/minio?filter={{ '(Status=="passing")' | urlencode }}
+    method: GET
+    headers:
+      X-Consul-Token: "{{ consul_token }}"
+    return_content: yes
+    status_code: 200
+    body_format: json
+  when: lookup('env', 'consul_acl') | bool and lookup('env', 'consul_acl_default_policy') == 'deny'
   register: result_minio
   retries: 15
   delay: 15
@@ -15,6 +36,16 @@
 - name: Start local proxy on port 9999 to minio service
   shell: nohup consul connect proxy -service minio-local -upstream minio:9999 -log-level debug </dev/null >/dev/null 2>&1 &
   register: test_output
+  when: not lookup('env', 'consul_acl') | bool or (lookup('env', 'consul_acl') | bool and lookup('env', 'consul_acl_default_policy') == 'allow')
+  tags: test
+
+# https://unix.stackexchange.com/a/148698
+- name: Start local proxy on port 9999 to minio service with token
+  shell: nohup consul connect proxy -service minio-local -upstream minio:9999 -log-level debug </dev/null >/dev/null 2>&1 &
+  register: test_output
+  when: lookup('env', 'consul_acl') | bool and lookup('env', 'consul_acl_default_policy') == 'deny'
+  environment:
+    CONSUL_HTTP_TOKEN: "{{ consul_token }}"
   tags: test
 
 - name: Debug test_output

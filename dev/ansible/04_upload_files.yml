@@ -1,6 +1,21 @@
+- name: set variable
+  set_fact:
+    consul_token: "master"
+
+# https://unix.stackexchange.com/a/148698
 - name: Start local proxy on port 9999 to minio service
   shell: nohup consul connect proxy -service minio-local -upstream minio:9999 -log-level debug </dev/null >/dev/null 2>&1 &
   register: test_output
+  when: not lookup('env', 'consul_acl') | bool or (lookup('env', 'consul_acl') | bool and lookup('env', 'consul_acl_default_policy') == 'allow')
+  tags: example-upload
+
+# https://unix.stackexchange.com/a/148698
+- name: Start local proxy on port 9999 to minio service with token
+  shell: nohup consul connect proxy -service minio-local -upstream minio:9999 -log-level debug </dev/null >/dev/null 2>&1 &
+  register: test_output
+  when: lookup('env', 'consul_acl') | bool and lookup('env', 'consul_acl_default_policy') == 'deny'
+  environment:
+    CONSUL_HTTP_TOKEN: "{{ consul_token }}"
   tags: example-upload
 
 # To quickly verify that proxy available (without any credentials)
@@ -59,7 +74,3 @@
   delay: 5
   until: uploaded.rc == 0
   tags: example-upload
-
-
-
-

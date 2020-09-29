@@ -1,0 +1,28 @@
+# We need this intention allow to be created from mc to minio before the terraform apply code is run so as to prevent
+# the mc nomad job from failing(when consul acl default policy is set to deny). The mc nomad job creates buckets in minio
+# and it fails at that stage if the explicit allow intentions are not already in place.
+- name: set variable
+  set_fact:
+    consul_token: "master"
+
+- name: Check if intention mc => minio (allow) exists
+  shell: consul intention match -source mc
+  register: mc_intention
+  when: lookup('env', 'consul_acl') | bool and lookup('env', 'consul_acl_default_policy') == 'deny'
+
+- name: Consul create intention mc => minio (allow)
+  shell: consul intention create mc minio
+  when: lookup('env', 'consul_acl') | bool and lookup('env', 'consul_acl_default_policy') == 'deny' and mc_intention.stdout_lines == []
+  environment:
+    CONSUL_HTTP_TOKEN: "{{ consul_token }}"
+
+- name: Check if intention minio-local => minio (allow) exists
+  shell: consul intention match -source minio-local
+  register: minio_local_intention
+  when: lookup('env', 'consul_acl') | bool and lookup('env', 'consul_acl_default_policy') == 'deny'
+
+- name: Consul create intention minio-local => minio (allow)
+  shell: consul intention create minio-local minio
+  when: lookup('env', 'consul_acl') | bool and lookup('env', 'consul_acl_default_policy') == 'deny' and minio_local_intention.stdout_lines == []
+  environment:
+    CONSUL_HTTP_TOKEN: "{{ consul_token }}"

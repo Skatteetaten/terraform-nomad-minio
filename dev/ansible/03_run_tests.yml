@@ -1,19 +1,44 @@
 - name: Minio healthchecks pass
   uri:
-    url: http://localhost:8500/v1/health/checks/minio?filter={{ '(Status=="passing")' | urlencode }}
+    # curl -G -v -H 'X-Consul-Token:master' http://127.0.0.1:8500/v1/health/checks/minio --data-urlencode 'filter=(Status=="passing")' | jq
+    url: http://127.0.0.1:8500/v1/health/checks/minio?filter={{ '(Status=="passing")' | urlencode }}
     method: GET
     return_content: yes
     status_code: 200
     body_format: json
+    headers:
+      X-Consul-Token: "master"
   register: result_minio
   retries: 15
   delay: 15
   until: result_minio.json | length == 2
   tags: test
 
+- name: Create allow 'minio-local'=>'minio' intentions - if consul_acl_default_policy=deny
+#  shell: consul intention create '*' '*' # <- NEVER use in production
+  shell: consul intention create 'minio-local' 'minio'
+  register: create_intention_1
+  environment:
+    CONSUL_HTTP_TOKEN: "master"
+  failed_when: create_intention_1.rc > 0
+  when: lookup('env', 'consul_acl') | bool and lookup('env', 'consul_acl_default_policy') == 'deny'
+  tags: test
+
+- name: Create allow 'mc'=>'minio' intentions - if consul_acl_default_policy=deny
+  #  shell: consul intention create '*' '*' # <- NEVER use in production
+  shell: consul intention create 'mc' 'minio'
+  register: create_intention_2
+  environment:
+    CONSUL_HTTP_TOKEN: "master"
+  failed_when: create_intention_2.rc > 0
+  when: lookup('env', 'consul_acl') | bool and lookup('env', 'consul_acl_default_policy') == 'deny'
+  tags: test
+
 # https://unix.stackexchange.com/a/148698
 - name: Start local proxy on port 9999 to minio service
   shell: nohup consul connect proxy -service minio-local -upstream minio:9999 -log-level debug </dev/null >/dev/null 2>&1 &
+  environment:
+    CONSUL_HTTP_TOKEN: "master"
   register: test_output
   tags: test
 

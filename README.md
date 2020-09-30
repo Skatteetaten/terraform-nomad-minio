@@ -101,6 +101,10 @@ vault kv get -field='access_key' secret/minio
 # get secret_key
 vault kv get -field='secret_key' secret/minio
 ```
+## Volumes
+We are using [host volume](https://www.nomadproject.io/docs/job-specification/volume) to store minio data.
+Minio data will now be available in the `persistence/minio` folder.
+
 
 ### Verifying setup
 

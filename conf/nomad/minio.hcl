@@ -8,6 +8,13 @@ job "${service_name}" {
     network {
       mode = "bridge"
     }
+
+    volume "persistence" {
+      type      = "host"
+      source    = "persistence"
+      read_only = false
+    }
+
     service {
       name = "${service_name}"
       port = "${port}"
@@ -35,6 +42,12 @@ job "${service_name}" {
 
     task "server" {
       driver = "docker"
+
+      volume_mount {
+        volume      = "persistence"
+        destination = "/local/data"
+        read_only   = false
+      }
 
       config {
         image             = "${image}"

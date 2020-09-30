@@ -8,3 +8,4 @@ tmp
 docker/conf/certificates/*.crt
 *.out
 super-linter.log
+persistence/minio/*

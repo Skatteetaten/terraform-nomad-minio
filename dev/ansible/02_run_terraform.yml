@@ -3,7 +3,6 @@
     project_path: ../../example
     force_init: true
     state: present
-    variables_file: /etc/default/terraform.tfvars
   register: terraform
 
 - name: Terraform stdout

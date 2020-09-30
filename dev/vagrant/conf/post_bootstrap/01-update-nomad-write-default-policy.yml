@@ -1,0 +1,18 @@
+- name: Fetch bootstrap token nomad
+  shell:
+    cmd: vault kv get -field=secret-id secret/nomad-bootstrap-token
+  when: lookup('env', 'nomad_acl') | bool
+  register: bootstrap_token
+
+- name: Copy nomad policy file to /etc/nomad.d/policies/
+  copy:
+    src: host_volume_policy.hcl
+    dest: /etc/nomad.d/policies/host_volume_policy.hcl
+  when: lookup('env', 'nomad_acl') | bool
+
+- name: Update default write policy on nomad
+  shell:
+    cmd: nomad acl policy apply write-default /etc/nomad.d/policies/host_volume_policy.hcl
+  when: lookup('env', 'nomad_acl') | bool
+  environment:
+    NOMAD_TOKEN: "{{ bootstrap_token.stdout }}"

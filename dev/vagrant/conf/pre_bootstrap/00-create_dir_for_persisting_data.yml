@@ -1,4 +1,4 @@
-- name: Create a directory if it does not exist
+- name: Create directory /persistence/minio for persisting minio data
   file:
     path: /vagrant/persistence/minio
     state: directory

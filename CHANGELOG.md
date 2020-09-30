@@ -5,6 +5,7 @@
 ### Added
 
 - Use vault to generate secrets for minio using kv
+- Code to support successful execution of nomad mc job and tests when consul_acl_default_policy is deny #26
 
 ## [0.0.3]
 

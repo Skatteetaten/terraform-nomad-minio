@@ -29,7 +29,7 @@ locals {
   command                  = join(" ", concat(local.mc_add_config_command, ["&&"], local.mc_create_bucket_command))
 }
 
-data "template_file" "nomad-job-minio" {
+data "template_file" "nomad_job_minio" {
 
   template = file("${path.module}/conf/nomad/minio.hcl")
 
@@ -47,7 +47,7 @@ data "template_file" "nomad-job-minio" {
   }
 }
 
-data "template_file" "nomad-job-mc" {
+data "template_file" "nomad_job_mc" {
 
   template = file("${path.module}/conf/nomad/mc.hcl")
 
@@ -66,17 +66,17 @@ data "template_file" "nomad-job-mc" {
   }
 }
 
-resource "nomad_job" "nomad-job-minio" {
-  jobspec = data.template_file.nomad-job-minio.rendered
+resource "nomad_job" "nomad_job_minio" {
+  jobspec = data.template_file.nomad_job_minio.rendered
   detach  = false
 }
 
-resource "nomad_job" "nomad-job-mc" {
-  jobspec     = data.template_file.nomad-job-mc.rendered
+resource "nomad_job" "nomad_job_mc" {
+  jobspec     = data.template_file.nomad_job_mc.rendered
   detach      = false
 
   depends_on  = [
-    nomad_job.nomad-job-minio
+    nomad_job.nomad_job_minio
   ]
 }
 

@@ -1,22 +1,27 @@
 - name: set variable
   set_fact:
     consul_token: "master"
+  tags:
+  - example-upload
+  - test
 
 # https://unix.stackexchange.com/a/148698
 - name: Start local proxy on port 9999 to minio service
   shell: nohup consul connect proxy -service minio-local -upstream minio:9999 -log-level debug </dev/null >/dev/null 2>&1 &
-  register: test_output
   when: not lookup('env', 'consul_acl') | bool or (lookup('env', 'consul_acl') | bool and lookup('env', 'consul_acl_default_policy') == 'allow')
-  tags: example-upload
+  tags:
+  - example-upload
+  - test
 
 # https://unix.stackexchange.com/a/148698
 - name: Start local proxy on port 9999 to minio service with token
   shell: nohup consul connect proxy -service minio-local -upstream minio:9999 -log-level debug </dev/null >/dev/null 2>&1 &
-  register: test_output
   when: lookup('env', 'consul_acl') | bool and lookup('env', 'consul_acl_default_policy') == 'deny'
   environment:
     CONSUL_HTTP_TOKEN: "{{ consul_token }}"
-  tags: example-upload
+  tags:
+  - example-upload
+  - test
 
 # To quickly verify that proxy available (without any credentials)
 # https://github.com/minio/minio/issues/4851#issuecomment-324543717
@@ -28,26 +33,38 @@
   until: curl_output.status == 403
   retries: 10
   delay: 5
-  tags: example-upload
+  tags:
+  - example-upload
+  - test
 
 - name: Debug curl_output
   debug:
     msg: "{{curl_output}}"
-  tags: example-upload
+  tags:
+  - example-upload
+  - test
 
 - name: Register access key
   shell:
     cmd: vault kv get -field='access_key' secret/minio
   register: access_key
+  tags:
+  - example-upload
+  - test
 
 - name: Register secret key
   shell:
     cmd: vault kv get -field='secret_key' secret/minio
   register: secret_key
+  tags:
+  - example-upload
+  - test
 
 - name: Add minio config
   shell: mc config host add minio-container http://127.0.0.1:9999 {{ access_key.stdout }} {{ secret_key.stdout }}
-  tags: example-upload
+  tags:
+  - example-upload
+  - test
 
 - name: Upload csv file to `/one/some/prefix/iris-file.csv`
   shell: mc cp ../../example/resources/data/csv/iris.csv minio-container/one/some/prefix/iris-file.csv
@@ -55,22 +72,28 @@
   retries: 10
   delay: 5
   until: csv_copy.rc == 0
-  tags: example-upload
+  tags:
+  - example-upload
+  - test
 
 - name: Verify that file exist on target `/one/some/prefix/iris-file.csv`
-  shell: mc cat minio-container/one/some/prefix/iris-file.csv
-  failed_when: csv_copy.rc == 1
-  tags: example-upload
+  shell: mc ls minio-container/one/some/prefix/iris-file.csv
+  tags:
+  - example-upload
+  - test
 
-- name: Upload `json` examples to target `/one/prefix/json/`
+- name: Upload data to target `/one/data/`
   shell: mc cp --recursive ../../example/resources/data/ minio-container/one/data/
-  register: batch_upload
-  tags: example-upload
-
-- name: Verify folder `proto-message/` is uploaded
-  shell:   mc ls minio-container/one/data --json | jq -s . | jq ".[].key" | grep "proto-message/"
-  register: uploaded
+  register: uploaded_data
   retries: 10
   delay: 5
-  until: uploaded.rc == 0
-  tags: example-upload
+  until: uploaded_data.rc == 0
+  tags:
+  - example-upload
+  - test
+
+- name: Verify folder `proto-message/` is uploaded
+  shell: mc ls minio-container/one/data/proto-message
+  tags:
+  - example-upload
+  - test

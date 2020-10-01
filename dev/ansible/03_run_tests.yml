@@ -1,6 +1,7 @@
 - name: set variable
   set_fact:
     consul_token: "master"
+  tags: test
 
 - name: Minio healthchecks pass
   uri:

@@ -8,6 +8,7 @@
 - Code to support successful execution of nomad mc job and tests when consul_acl_default_policy is deny #26
 - Updated README.md #21
 - Added host volume for minio #20
+- Added tests to verify host volume for minio #34
 
 ### Changed
 

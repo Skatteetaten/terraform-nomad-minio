@@ -8,6 +8,10 @@
 - Code to support successful execution of nomad mc job and tests when consul_acl_default_policy is deny #26
 - Updated README.md #21
 
+### Changed
+
+- terraform-provider-nomad 1.4.0 -> 1.4.9 and vault provider 2.13.0 -> 2.14.0 #30
+
 ## [0.0.3]
 
 ### Added

@@ -8,6 +8,13 @@ job "${service_name}" {
     network {
       mode = "bridge"
     }
+
+    volume "persistence" {
+      type      = "host"
+      source    = "${host_volume}"
+      read_only = false
+    }
+
     service {
       name = "${service_name}"
       port = "${port}"
@@ -36,18 +43,24 @@ job "${service_name}" {
     task "server" {
       driver = "docker"
 
+      volume_mount {
+        volume      = "persistence"
+        destination = "${data_dir}"
+        read_only   = false
+      }
+
       config {
         image             = "${image}"
         memory_hard_limit = 2048
         args              = [
           "server",
-          "/local/data",
+          "${data_dir}",
           "-address",
           "${host}:${port}"
         ]
       }
       template {
-        destination = "local/data/.envs"
+        destination = "${data_dir}/.envs"
         change_mode = "noop"
         env         = true
         data        = <<EOF

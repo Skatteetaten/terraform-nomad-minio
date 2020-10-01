@@ -1,0 +1,5 @@
+- name: Create directory /persistence/minio for persisting minio data
+  file:
+    path: /vagrant/persistence/minio
+    state: directory
+    mode: '0777'

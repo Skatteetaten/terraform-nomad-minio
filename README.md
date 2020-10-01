@@ -42,15 +42,16 @@ Minio example instance has:
 ## Inputs
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| nomad\_provider\_address | Nomad provider address | string | "http://127.0.0.1:4646" | yes |
 | nomad\_data\_center | Nomad data centers | list(string) | ["dc1"] | yes |
 | nomad\_namespace | [Enterprise] Nomad namespace | string | "default" | yes |
+| nomad\_host\_volume | Nomad host volume | string | "persistence" | yes |
 | service\_name | Minio service name | string | "minio" | yes |
 | host | Minio host | string | "127.0.0.1" | yes |
 | port | Minio port | number | 9000 | yes |
 | container\_image | Minio docker image | string | "minio/minio:latest" | yes |
 | access\_key | Minio access key | string | dynamically generated secrets with Vault  | yes |
 | secret\_key | Minio secret key | string | dynamically generated secrets with Vault | yes |
+| data\_dir | Minio server data dir | string | "/local/data" | yes |
 | container\_environment\_variables | Additional minio container environment variables | list(string) | [] | no |
 | mc\_service\_name | Minio client service name | string | "mc" | yes |
 | mc\_container\_image | Minio client docker image | string | "minio/mc:latest" | yes |
@@ -75,12 +76,14 @@ module "minio" {
   # nomad
   nomad_datacenters               = ["dc1"]
   nomad_namespace                 = "default"
+  nomad_host_volume               = "persistence"
 
   # minio
   service_name                    = "minio"
   host                            = "127.0.0.1"
   port                            = 9000
   container_image                 = "minio/minio:latest"
+  data_dir                        = "/local/data"
   container_environment_variables = ["SOME_VAR_N1=some-value"]
 
   # minio client
@@ -101,6 +104,10 @@ vault kv get -field='access_key' secret/minio
 # get secret_key
 vault kv get -field='secret_key' secret/minio
 ```
+## Volumes
+We are using [host volume](https://www.nomadproject.io/docs/job-specification/volume) to store minio data.
+Minio data will now be available in the `persistence/minio` folder.
+
 
 ### Verifying setup
 

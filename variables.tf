@@ -9,6 +9,11 @@ variable "nomad_namespace" {
   description = "[Enterprise] Nomad namespace"
   default     = "default"
 }
+variable "nomad_host_volume" {
+  type        = string
+  description = "Nomad Host Volume"
+  default     = "persistence"
+}
 
 # Minio
 variable "service_name" {
@@ -43,6 +48,12 @@ variable "access_key" {
 variable "secret_key" {
   type        = string
   description = "Minio secret key"
+}
+
+variable "data_dir" {
+  type        = string
+  description = "Minio server data dir"
+  default     = "/local/data"
 }
 
 variable "container_environment_variables" {

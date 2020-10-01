@@ -11,7 +11,7 @@ job "${service_name}" {
 
     volume "persistence" {
       type      = "host"
-      source    = "persistence"
+      source    = "${host_volume}"
       read_only = false
     }
 
@@ -45,7 +45,7 @@ job "${service_name}" {
 
       volume_mount {
         volume      = "persistence"
-        destination = "/local/data"
+        destination = "${data_dir}"
         read_only   = false
       }
 
@@ -54,13 +54,13 @@ job "${service_name}" {
         memory_hard_limit = 2048
         args              = [
           "server",
-          "/local/data",
+          "${data_dir}",
           "-address",
           "${host}:${port}"
         ]
       }
       template {
-        destination = "local/data/.envs"
+        destination = "${data_dir}/.envs"
         change_mode = "noop"
         env         = true
         data        = <<EOF

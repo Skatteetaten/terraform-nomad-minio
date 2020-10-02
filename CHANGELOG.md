@@ -9,6 +9,9 @@
 - Updated README.md #21
 - Added host volume for minio #20
 - Added tests to verify host volume for minio #34
+- Added release and release-prerequisites jobs in workflow file #35
+- Added github action to create follow up issue after github release #36
+- Added changelog enforcer #42
 
 ### Changed
 

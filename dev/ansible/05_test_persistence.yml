@@ -1,0 +1,207 @@
+# This file contains checks and test scenarios that test the persistence feature for minio
+- name: set variable
+  set_fact:
+    consul_token: "master"
+  tags: test
+
+- name: Fetch bootstrap token nomad
+  shell:
+    cmd: vault kv get -field=secret-id secret/nomad-bootstrap-token
+  when: lookup('env', 'nomad_acl') | bool
+  register: bootstrap_token
+  tags: test
+
+- name: Verify if host volume has been added on nomad node(acl enabled)
+  shell:
+    cmd: nomad node status -short -self | grep 'Host Volumes' | tr -d " \t\n\r"  | cut -d "=" -f2
+  register: nomad_node_status
+  when: lookup('env', 'nomad_acl') | bool
+  failed_when: nomad_node_status.stdout != "persistence"
+  environment:
+    NOMAD_TOKEN: "{{ bootstrap_token.stdout }}"
+  tags: test
+
+- name: Verify if host volume has been added on nomad node(acl disabled)
+  shell:
+    cmd: nomad node status -short -self | grep 'Host Volumes' | tr -d " \t\n\r"  | cut -d "=" -f2
+  register: nomad_node_status_1
+  failed_when: nomad_node_status_1.stdout != "persistence"
+  when: not lookup('env', 'nomad_acl') | bool
+  tags: test
+
+#******************************************************************#
+#Test Scenario 1
+#******************************************************************#
+# 1. Stop the minio job
+# 2. Check status for minio and it should not be in running state
+# 3. Delete terraform.tfstate, terraform.tfstate.backup and .terraform
+# 4. Re-deploy minio with existing volume using terraform apply
+# 5. Verify that data persists on new instance
+# 6. Verify that it is possible to upload data to the new instance
+
+- name: Stop nomad minio job (nomad acl enabled)
+  shell:
+    cmd: nomad stop -purge minio
+  when: lookup('env', 'nomad_acl') | bool
+  environment:
+    NOMAD_TOKEN: "{{ bootstrap_token.stdout }}"
+  tags: test
+
+- name: Stop nomad minio job (nomad acl disabled)
+  shell:
+    cmd: nomad stop -purge minio
+  when: not lookup('env', 'nomad_acl') | bool
+  tags: test
+
+- name: Fetch nomad minio job status(nomad acl enabled)
+  shell:
+    cmd: nomad status minio | grep -m 1 'Status' | tr -d " \t\n\r"  | cut -d "=" -f2
+  register: nomad_minio_status
+  when: lookup('env', 'nomad_acl') | bool
+  failed_when: nomad_minio_status.stdout == "running"
+  environment:
+    NOMAD_TOKEN: "{{ bootstrap_token.stdout }}"
+  tags: test
+
+- name: Fetch nomad minio job status (nomad acl disabled)
+  shell:
+    cmd: nomad status minio | grep -m 1 'Status' | tr -d " \t\n\r"  | cut -d "=" -f2
+  register: nomad_minio_status_1
+  when: not lookup('env', 'nomad_acl') | bool
+  failed_when: nomad_minio_status_1.stdout == "running"
+  tags: test
+
+- name: Delete terraform related files and folders
+  file:
+    path: "../../example/{{ line_item }}"
+    state: absent
+  loop:
+    - terraform.tfstate.backup
+    - terraform.tfstate
+    - .terraform
+  loop_control:
+    loop_var: line_item
+  tags: test
+
+- name: Terraform apply to restart purged minio job
+  terraform:
+    project_path: ../../example
+    force_init: true
+    state: present
+  register: terraform
+  tags: test
+
+- name: Terraform stdout
+  debug:
+    msg: "{{terraform.stdout}}"
+  tags: test
+
+# https://unix.stackexchange.com/a/148698
+- name: Start local proxy on port 9999 to minio service
+  shell: nohup consul connect proxy -service minio-local -upstream minio:9999 -log-level debug </dev/null >/dev/null 2>&1 &
+  when: not lookup('env', 'consul_acl') | bool or (lookup('env', 'consul_acl') | bool and lookup('env', 'consul_acl_default_policy') == 'allow')
+  tags: test
+
+- name: Start local proxy on port 9999 to minio service with token
+  shell: nohup consul connect proxy -service minio-local -upstream minio:9999 -log-level debug </dev/null >/dev/null 2>&1 &
+  when: lookup('env', 'consul_acl') | bool and lookup('env', 'consul_acl_default_policy') == 'deny'
+  environment:
+    CONSUL_HTTP_TOKEN: "{{ consul_token }}"
+  tags: test
+
+- name: Minio curl example. Verify that proxy to minio available
+  uri:
+    url: http://127.0.0.1:9999
+    status_code: 403
+  register: curl_output
+  until: curl_output.status == 403
+  retries: 10
+  delay: 5
+  tags: test
+
+- name: Debug curl_output
+  debug:
+    msg: "{{curl_output}}"
+  tags: test
+
+- name: Register access key
+  shell:
+    cmd: vault kv get -field='access_key' secret/minio
+  register: access_key
+
+- name: Register secret key
+  shell:
+    cmd: vault kv get -field='secret_key' secret/minio
+  register: secret_key
+  tags: test
+
+- name: Add minio config
+  shell: mc config host add minio-container http://127.0.0.1:9999 {{ access_key.stdout }} {{ secret_key.stdout }}
+  tags: test
+
+- name: Verify that file exist on target `/one/some/prefix/iris-file.csv`
+  shell: mc ls minio-container/one/some/prefix/iris-file.csv
+  tags: test
+
+- name: Verify folder `proto-message/` is uploaded
+  shell: mc ls minio-container/one/data/proto-message
+  tags: test
+
+- name: Upload csv file to `/one/some/prefix/test-persistence-file.csv`
+  shell: mc cp ../../example/resources/data/csv/test-persistence-file.csv minio-container/one/some/prefix/test-persistence-file.csv
+  register: csv_copy2
+  retries: 10
+  delay: 5
+  until: csv_copy2.rc == 0
+  tags: test
+
+- name: Verify that file exist on target `/one/some/prefix/test-persistence-file.csv`
+  shell: mc ls minio-container/one/some/prefix/test-persistence-file.csv
+  tags: test
+
+#****************************************#
+#Test Scenario 2
+#****************************************#
+# 1.Simulate container crash (docker cli, stop container and remove it)
+# 2.Nomad should automatically create a new instance of container with the same volume
+# 3.Verify that data available on new instance
+
+- name: Stop the docker container running minio
+  shell: docker stop $(docker ps -a -q --filter ancestor="minio/minio:latest")
+  register: docker_output
+  tags: test
+
+- name: Wait till nomad restarts the docker container running minio
+  shell: docker ps -a -q --filter ancestor="minio/minio:latest"
+  register: docker_output1
+  retries: 20
+  delay: 15
+  until: docker_output1.stdout != ""
+  tags: test
+
+- name: Start local proxy on port 9999 to minio service
+  shell: nohup consul connect proxy -service minio-local -upstream minio:9999 -log-level debug </dev/null >/dev/null 2>&1 &
+  when: not lookup('env', 'consul_acl') | bool or (lookup('env', 'consul_acl') | bool and lookup('env', 'consul_acl_default_policy') == 'allow')
+  tags: test
+
+- name: Start local proxy on port 9999 to minio service with token
+  shell: nohup consul connect proxy -service minio-local -upstream minio:9999 -log-level debug </dev/null >/dev/null 2>&1 &
+  when: lookup('env', 'consul_acl') | bool and lookup('env', 'consul_acl_default_policy') == 'deny'
+  environment:
+    CONSUL_HTTP_TOKEN: "{{ consul_token }}"
+  tags: test
+
+- name: Pause for 40 seconds before querying
+  pause:
+    seconds: 40
+  tags: test
+
+- name: Verify that file persists on target `/one/some/prefix/iris-file.csv`
+  shell: mc ls minio-container/one/some/prefix/iris-file.csv
+  register: ls_iris_file
+  tags: test
+
+- name: Debug output from ls command
+  debug:
+    msg: "{{ ls_iris_file }}"
+  tags: test

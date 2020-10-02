@@ -66,6 +66,7 @@ remove-tmp:
 	rm -rf ./example/.terraform
 	rm -rf ./example/terraform.tfstate
 	rm -rf ./example/terraform.tfstate.backup
+	rm -rf ./persistence
 
 clean: destroy-box remove-tmp
 

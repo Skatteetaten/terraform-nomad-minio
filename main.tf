@@ -34,17 +34,18 @@ data "template_file" "nomad_job_minio" {
   template = file("${path.module}/conf/nomad/minio.hcl")
 
   vars = {
-    datacenters  = local.datacenters
-    namespace    = var.nomad_namespace
-    host_volume  = var.nomad_host_volume
-    image        = var.container_image
-    service_name = var.service_name
-    host         = var.host
-    port         = var.port
-    access_key   = var.access_key
-    secret_key   = var.secret_key
-    data_dir     = var.data_dir
-    envs         = local.minio_env_vars
+    datacenters     = local.datacenters
+    namespace       = var.nomad_namespace
+    host_volume     = var.nomad_host_volume
+    image           = var.container_image
+    service_name    = var.service_name
+    host            = var.host
+    port            = var.port
+    access_key      = var.access_key
+    secret_key      = var.secret_key
+    data_dir        = var.data_dir
+    envs            = local.minio_env_vars
+    use_host_volume = var.use_host_volume
 
   }
 }

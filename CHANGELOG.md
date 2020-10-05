@@ -13,6 +13,7 @@
 - Added github action to create follow up issue after github release #36
 - Added changelog enforcer #42
 - Added switch use_host_volume for enabling/disabling host volume #39
+- Use ansible module to create random strings #44
 
 ### Changed
 

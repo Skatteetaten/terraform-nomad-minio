@@ -3,8 +3,6 @@ on:
   pull_request:
     branches: [ master ]
     types: [ opened, synchronize, reopened, edited, closed, labeled, unlabeled ]
-  push:
-    branches: [ master ]
   schedule:
     - cron: "0 1 * * *"
 

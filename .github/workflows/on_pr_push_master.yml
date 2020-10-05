@@ -153,14 +153,9 @@ jobs:
     outputs:
       bump: ${{ steps.bump.outputs.match }}
       next_version: ${{ steps.next_version.outputs.version }}
-      current_version: ${{ steps.current_version.outputs.VERSIO }}
       log_entry: ${{ steps.changelog_reader.outputs.log_entry }}
 
     steps:
-      - uses: actions/checkout@v2
-      - id: current_version
-        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
-
       - name: Require PR label (major/minor/patch)
         id: bump
         uses: zwaldowski/match-label-action@v1

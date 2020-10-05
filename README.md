@@ -44,7 +44,7 @@ Minio example instance has:
 |------|-------------|------|---------|:--------:|
 | nomad\_data\_center | Nomad data centers | list(string) | ["dc1"] | yes |
 | nomad\_namespace | [Enterprise] Nomad namespace | string | "default" | yes |
-| nomad\_host\_volume | Nomad host volume | string | "persistence" | yes |
+| nomad\_host\_volume | Nomad host volume | string | "persistence" | no |
 | service\_name | Minio service name | string | "minio" | yes |
 | host | Minio host | string | "127.0.0.1" | yes |
 | port | Minio port | number | 9000 | yes |
@@ -53,6 +53,7 @@ Minio example instance has:
 | secret\_key | Minio secret key | string | dynamically generated secrets with Vault | yes |
 | data\_dir | Minio server data dir | string | "/local/data" | yes |
 | container\_environment\_variables | Additional minio container environment variables | list(string) | [] | no |
+| use\_host\_volume | Switch to enable or disable host volume | bool | false | no |
 | mc\_service\_name | Minio client service name | string | "mc" | yes |
 | mc\_container\_image | Minio client docker image | string | "minio/mc:latest" | yes |
 | mc\_container\_environment\_variables | Additional minio client container environment variables | list(string) | [] | no |
@@ -85,6 +86,7 @@ module "minio" {
   container_image                 = "minio/minio:latest"
   data_dir                        = "/local/data"
   container_environment_variables = ["SOME_VAR_N1=some-value"]
+  use_host_volume                 = false
 
   # minio client
   mc_service_name                 = "mc"

@@ -61,6 +61,11 @@ variable "container_environment_variables" {
   description = "Additional minio container environment variables"
   default     = []
 }
+variable "use_host_volume" {
+  type        = bool
+  description = "Switch for nomad jobs to use host volume feature"
+  default     = false
+}
 
 # MC
 variable "mc_service_name" {

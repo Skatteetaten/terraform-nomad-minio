@@ -12,6 +12,7 @@
 - Added release and release-prerequisites jobs in workflow file #35
 - Added github action to create follow up issue after github release #36
 - Added changelog enforcer #42
+- Added switch use_host_volume for enabling/disabling host volume #39
 
 ### Changed
 

@@ -9,11 +9,13 @@ job "${service_name}" {
       mode = "bridge"
     }
 
+  %{ if use_host_volume }
     volume "persistence" {
       type      = "host"
       source    = "${host_volume}"
       read_only = false
     }
+  %{ endif }
 
     service {
       name = "${service_name}"
@@ -42,12 +44,13 @@ job "${service_name}" {
 
     task "server" {
       driver = "docker"
-
+  %{ if use_host_volume }
       volume_mount {
         volume      = "persistence"
         destination = "${data_dir}"
         read_only   = false
       }
+  %{ endif }
 
       config {
         image             = "${image}"

@@ -154,6 +154,7 @@ jobs:
       log_entry: ${{ steps.changelog_reader.outputs.log_entry }}
 
     steps:
+      - uses: actions/checkout@v2
       - name: Require PR label (major/minor/patch)
         id: bump
         uses: zwaldowski/match-label-action@v1

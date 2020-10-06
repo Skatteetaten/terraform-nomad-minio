@@ -15,6 +15,7 @@
 - Added check for consul and terraform binary in the `Makefile` #20
 - Added `make pre-commit` command that use local linter and formatts/prettyfies all `.tf` files #24
 - `Vault PKI` section to README
+- Token for terraform-provider-vault #35
 
 ### Fixed
 

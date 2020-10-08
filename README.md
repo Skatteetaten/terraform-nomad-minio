@@ -55,6 +55,7 @@
       2. [Fetching Resources From MinIO With Nomad (Docker image)](#fetching-resources-from-minio-with-nomad-docker-image)
    3. [Iteration of the Development Process](#iteration-of-the-development-process)
    4. [Changelog](#changelog)
+   5. [How to sync module with the latest template](#how-to-sync-module-with-the-latest-template)
 5. [Test Configuration and Execution](#test-configuration-and-execution)
 
 
@@ -444,6 +445,36 @@ All PRs will run [super-linter](https://github.com/github/super-linter). You can
 #### Terraform formatting
 You can run [`terraform fmt --recursive`](https://www.terraform.io/docs/commands/fmt.html) to rewrite your terraform config-files to a [canonical format](https://www.terraform.io/docs/configuration/style.html).
 > :warning: [Terraform binary](https://www.terraform.io/downloads.html) must be available to do this.
+
+#### How to sync module with the latest template
+
+1 Add remote upstream to template origin
+```text
+git remote add template https://github.com/fredrikhgrelland/vagrant-hashistack-template.git
+```
+2 Fetch all
+```text
+git fetch --all
+```
+3 Checkout template master branch and pull. Its important to have it locally
+```text
+git checkout -b template-master template/master
+git pull
+```
+4 Checkout new branch from origin master of current module
+```text
+git checkout master    # checkout master
+git pull               # pull the latest master
+git checkout -b sync   # checkout new branch `sync` from master
+```
+5 Run git merge with the flag --allow-unrelated-histories
+```text
+git merge template-master --allow-unrelated-histories
+```
+6 Fix conflicts (carefully)  
+7 Commit changes  
+8 Push branch sync
+9 Make pull request `sync` against `master` branch
 
 ### Testing the module
 The tests are run using [Github Actions](https://github.com/features/actions) feature which makes it possible to automate, customize, and execute the software development workflows right in the repository. We utilize the **matrix testing strategy** to cover all the possible and logical combinations of the different properties and values that the components support. The .env_override file is used by the tests to override the values that are available in the .env_default file, as well as the user configurable .env file.

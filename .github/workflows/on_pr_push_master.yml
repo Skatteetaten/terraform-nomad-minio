@@ -142,3 +142,64 @@ jobs:
       - name: Run make test
         if: github.repository != 'fredrikhgrelland/vagrant-hashistack-template'
         run: make test
+
+  release-prerequisites:
+    if: |
+      contains(github.event.pull_request.labels.*.name, 'major') ||
+      contains(github.event.pull_request.labels.*.name, 'minor') ||
+      contains(github.event.pull_request.labels.*.name, 'patch')
+    runs-on: macos-latest
+    outputs:
+      bump: ${{ steps.bump.outputs.match }}
+      next_version: ${{ steps.next_version.outputs.version }}
+      log_entry: ${{ steps.changelog_reader.outputs.log_entry }}
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Require PR label (major/minor/patch)
+        id: bump
+        uses: zwaldowski/match-label-action@v1
+        with:
+          allowed: major,minor,patch
+
+      - id: next_version
+        uses: zwaldowski/semver-release-action@v1
+        with:
+          dry_run: true
+          bump: ${{ steps.bump.outputs.match }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Find and replace
+        run: python .github/action/find-replace.py
+        env:
+          FIND: "'"
+          REPLACE: "'\\''"
+          FILE_TO_MODIFY: CHANGELOG.md
+
+      - name: Get Changelog Entry
+        id: changelog_reader
+        uses: mindsers/changelog-reader-action@v1.1.0
+        with:
+          version: ${{ steps.next_version.outputs.version }}
+          path: CHANGELOG.md
+
+    release:
+      if: github.event.action == 'closed' && github.event.pull_request.merged == true
+      needs:
+        - release-prerequisites
+        - test
+
+      runs-on: macos-latest
+      steps:
+        - name: Create Release on github
+          id: create_release
+          uses: actions/create-release@v1
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          with:
+            tag_name: ${{ needs.release-prerequisites.outputs.next_version }}
+            release_name: Release v${{ needs.release-prerequisites.outputs.next_version }}
+            body: |
+              ${{ needs.release-prerequisites.outputs.log_entry }}
+            draft: false
+            prerelease: false

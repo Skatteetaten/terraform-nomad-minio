@@ -183,23 +183,23 @@ jobs:
           version: ${{ steps.next_version.outputs.version }}
           path: CHANGELOG.md
 
-    release:
-      if: github.event.action == 'closed' && github.event.pull_request.merged == true
-      needs:
-        - release-prerequisites
-        - test
+  release:
+    if: github.event.action == 'closed' && github.event.pull_request.merged == true
+    needs:
+      - release-prerequisites
+      - test
 
-      runs-on: macos-latest
-      steps:
-        - name: Create Release on github
-          id: create_release
-          uses: actions/create-release@v1
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          with:
-            tag_name: ${{ needs.release-prerequisites.outputs.next_version }}
-            release_name: Release v${{ needs.release-prerequisites.outputs.next_version }}
-            body: |
-              ${{ needs.release-prerequisites.outputs.log_entry }}
-            draft: false
-            prerelease: false
+    runs-on: macos-latest
+    steps:
+      - name: Create Release on github
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ needs.release-prerequisites.outputs.next_version }}
+          release_name: Release v${{ needs.release-prerequisites.outputs.next_version }}
+          body: |
+            ${{ needs.release-prerequisites.outputs.log_entry }}
+          draft: false
+          prerelease: false

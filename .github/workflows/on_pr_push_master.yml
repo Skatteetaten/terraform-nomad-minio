@@ -2,7 +2,7 @@ name: CI/CD
 on:
   pull_request:
     branches: [ master ]
-    types: [ opened, synchronize, reopened, edited, closed ]
+    types: [ opened, synchronize, reopened, edited, closed, labeled, unlabeled ]
   push:
     branches: [ master ]
 
@@ -31,6 +31,18 @@ jobs:
           VALIDATE_SQL: true
           VALIDATE_TERRAFORM: true
           VALIDATE_XML: true
+
+  enforce-changelog:
+    runs-on: ubuntu-latest
+    if: github.event.action != 'closed' && github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v1
+      - uses: dangoslen/changelog-enforcer@v1.1.1
+        with:
+          changeLogPath: 'CHANGELOG.md'
+          skipLabel: 'skip-changelog'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   test:
     runs-on: macos-latest

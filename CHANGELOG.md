@@ -19,6 +19,7 @@
 - `Vault PKI` section to README
 - Token for terraform-provider-vault #35
 - Section how to sync modules with the latest template #32
+- Added changelog enforcer to pipeline checks #31
 
 ### Fixed
 

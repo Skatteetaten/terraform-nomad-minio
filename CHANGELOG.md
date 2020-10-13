@@ -11,6 +11,7 @@
 - updated up and template_example targets in makefile to use ci_test instead of local_test variable #38
 - updated Makefile `pre-commit` with `check_for_terraform_binary` #41
 - updated up and template_example targets in makefile #45
+- bumped vagrant-hashistack version to 0.5 #50
 
 ### Added
 

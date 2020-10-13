@@ -1,5 +1,4 @@
 include dev/.env
-export
 export PATH := $(shell pwd)/tmp:$(PATH)
 
 .ONESHELL .PHONY: up update-box destroy-box remove-tmp clean example
@@ -58,7 +57,6 @@ status:
 destroy-box:
 	vagrant destroy -f
 
-remove-tmp:
 remove-tmp:
 	rm -rf ./tmp
 	rm -rf ./.vagrant

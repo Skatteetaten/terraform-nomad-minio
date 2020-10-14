@@ -10,7 +10,7 @@ There are two layers of configuration built into the box.
 You may add a `pre_ansible.sh` script file to this directory to run any alterations **before** ansible bootstrap procedure will run.
 
 This might come handy if you need to change or replace that bootstrap process. For example you replacing the entire `/etc/ansible` directory.
-For most cases, you are probably looking to add configuration in [pre/poststart bootstrap](pre_bootstrap/README.md)
+For most cases, you are probably looking to add configuration in [pre/poststart bootstrap](../pre_bootstrap/README.md)
 
 #### Post
 If you need to run additional commands after ansible bootstrap has happened, you may add a `post_ansible.sh`.
@@ -28,5 +28,5 @@ There are two primary cases for customization.
 
 ### Add pre and post bootstrap tasks
 
-- [pre_bootstrap](pre_bootstrap/README.md)
-- [post_bootstrap](post_bootstrap/README.md)
+- [pre_bootstrap](../pre_bootstrap/README.md)
+- [post_bootstrap](../post_bootstrap/README.md)

@@ -1,7 +1,12 @@
 # Changelog
 
-## [1.0.0 UNRELEASED]
+## [0.1.0 UNRELEASED]
 
+## Changed
+
+- updated to fit hashistack v0.6.0
+
+## [0.0.1 UNRELEASED]
 
 ### Changed
 

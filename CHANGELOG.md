@@ -4,6 +4,8 @@
 
 ### Added
 
+- Github templates for issues and PRs #54
+
 ### Changed
 - Updated up and template_example targets in makefile #48
 - Updated enforce-changelog in github workflow file #50

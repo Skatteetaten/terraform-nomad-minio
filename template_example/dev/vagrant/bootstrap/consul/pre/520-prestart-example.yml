@@ -1,3 +1,0 @@
-- name: "{{ service }} - prestart"
-  debug:
-    msg: This is the second user defined prestart task ( 520-prestart-example.yml )

@@ -1,3 +1,0 @@
-- name: "{{ service }} - poststart"
-  debug:
-    msg: This is the second user defined poststart task ( 520-poststart-example.yml )

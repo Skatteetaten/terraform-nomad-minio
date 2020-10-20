@@ -218,4 +218,3 @@ jobs:
 
       - name: Print Id of the newly created issue
         run: echo ${{ steps.my_step_id.create_issue.number }}
-          prerelease: false

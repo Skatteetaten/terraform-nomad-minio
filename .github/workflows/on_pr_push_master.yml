@@ -5,6 +5,8 @@ on:
     types: [ opened, synchronize, reopened, edited, closed, labeled, unlabeled ]
   schedule:
     - cron: "0 1 * * *"
+  push:
+    branches: [ master ]
 
 jobs:
   linter:
@@ -216,3 +218,4 @@ jobs:
 
       - name: Print Id of the newly created issue
         run: echo ${{ steps.my_step_id.create_issue.number }}
+          prerelease: false

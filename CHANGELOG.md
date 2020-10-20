@@ -49,6 +49,12 @@
 - Initial example
 - Changelog #7
 
+## [0.1.0 UNRELEASED]
+
+## Changed
+
+- updated to fit hashistack v0.6.0
+
 ### Fixed
 
 - Remove hardcoded nomad provider #6

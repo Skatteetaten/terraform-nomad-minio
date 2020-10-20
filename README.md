@@ -16,7 +16,6 @@ Terraform-nomad-minio module is IaC - infrastructure as code. Module contains a 
 |Nomad|0.12.3 or newer|0.12.3 or newer|
 
 ## Usage
-
 ```text
 make up
 ```

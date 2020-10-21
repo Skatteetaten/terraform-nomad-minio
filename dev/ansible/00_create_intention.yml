@@ -3,12 +3,14 @@
 # and it fails at that stage if the explicit allow intentions are not already in place.
 - name: set variable
   set_fact:
-    consul_token: "master"
+    consul_token: "{{ lookup('env', 'consul_master_token') }}"
 
 - name: Check if intention mc => minio (allow) exists
   shell: consul intention match -source mc
   register: mc_intention
   when: lookup('env', 'consul_acl') | bool and lookup('env', 'consul_acl_default_policy') == 'deny'
+  environment:
+    CONSUL_HTTP_TOKEN: "{{ consul_token }}"
 
 - name: Consul create intention mc => minio (allow)
   shell: consul intention create mc minio
@@ -20,6 +22,8 @@
   shell: consul intention match -source minio-local
   register: minio_local_intention
   when: lookup('env', 'consul_acl') | bool and lookup('env', 'consul_acl_default_policy') == 'deny'
+  environment:
+    CONSUL_HTTP_TOKEN: "{{ consul_token }}"
 
 - name: Consul create intention minio-local => minio (allow)
   shell: consul intention create minio-local minio

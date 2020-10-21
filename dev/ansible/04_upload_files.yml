@@ -1,6 +1,8 @@
 - name: set variable
   set_fact:
-    consul_token: "master"
+    consul_token: "{{ lookup('env', 'consul_master_token') }}"
+    vault_addr: "{{ lookup('env', 'VAULT_ADDR') }}"
+    vault_token: "{{ lookup('env', 'vault_master_token') }}"
   tags:
   - example-upload
   - test
@@ -47,6 +49,9 @@
 - name: Register access key
   shell:
     cmd: vault kv get -field='access_key' secret/minio
+  environment:
+    VAULT_ADDR: "{{ vault_addr }}"
+    VAULT_TOKEN: "{{ vault_token }}"
   register: access_key
   tags:
   - example-upload
@@ -55,6 +60,9 @@
 - name: Register secret key
   shell:
     cmd: vault kv get -field='secret_key' secret/minio
+  environment:
+    VAULT_ADDR: "{{ vault_addr }}"
+    VAULT_TOKEN: "{{ vault_token }}"
   register: secret_key
   tags:
   - example-upload

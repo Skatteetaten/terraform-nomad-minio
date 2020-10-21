@@ -5,6 +5,8 @@ on:
     types: [ opened, synchronize, reopened, edited, closed, labeled, unlabeled ]
   schedule:
     - cron: "0 1 * * *"
+  push:
+    branches: [ master ]
 
 jobs:
   linter:

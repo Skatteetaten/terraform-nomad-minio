@@ -9,6 +9,7 @@
 ### Changed
 - Updated up and template_example targets in makefile #48
 - Updated enforce-changelog in github workflow file #50
+- Synced with template and updated box version #52
 
 ## [0.1.0]
 

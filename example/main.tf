@@ -1,3 +1,7 @@
+data "vault_generic_secret" "minio_secrets" {
+  path  = "secret/minio"
+}
+
 module "minio" {
   source = "./.."
 

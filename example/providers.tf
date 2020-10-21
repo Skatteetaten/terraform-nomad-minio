@@ -4,10 +4,6 @@ data "vault_generic_secret" "nomad_secret_id" {
   path  = "nomad/creds/write"
 }
 
-data "vault_generic_secret" "minio_secrets" {
-  path  = "secret/minio"
-}
-
 provider "nomad" {
   address = "http://127.0.0.1:4646"
   # Add a secret_id if ACLs are enabled in nomad

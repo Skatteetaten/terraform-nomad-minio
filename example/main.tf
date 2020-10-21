@@ -1,12 +1,3 @@
-provider "vault" {
-  address = "http://127.0.0.1:8200"
-  token = "master"
-}
-
-data "vault_generic_secret" "minio_secrets" {
-  path  = "secret/minio"
-}
-
 module "minio" {
   source = "./.."
 

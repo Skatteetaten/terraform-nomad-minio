@@ -53,7 +53,7 @@ variable "secret_key" {
 variable "data_dir" {
   type        = string
   description = "Minio server data dir"
-  default     = "/local/data"
+  default     = "/minio/data"
 }
 
 variable "container_environment_variables" {

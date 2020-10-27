@@ -67,6 +67,12 @@ variable "use_host_volume" {
   default     = false
 }
 
+variable "use_canary" {
+  type = bool
+  description = "Uses canary deployment for Minio"
+  default = false
+}
+
 # MC
 variable "mc_service_name" {
   type        = string

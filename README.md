@@ -65,6 +65,7 @@ Minio example instance has:
 | minio\_service\_name | Minio service name | string |
 | minio\_access\_key | Minio access key | string |
 | minio\_secret\_key | Minio secret key | string |
+| use_canary | Minio canary deployment | bool |
 
 ### Example
 Example-code that shows how to use the module, and, if applicable, its different use cases.

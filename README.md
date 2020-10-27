@@ -57,6 +57,7 @@ Minio example instance has:
 | mc\_container\_image | Minio client docker image | string | "minio/mc:latest" | yes |
 | mc\_container\_environment\_variables | Additional minio client container environment variables | list(string) | [] | no |
 | buckets | List of buckets to create on startup | list(string) | [] | no |
+| use_canary | Minio canary deployment | bool |
 
 
 ## Outputs
@@ -65,7 +66,7 @@ Minio example instance has:
 | minio\_service\_name | Minio service name | string |
 | minio\_access\_key | Minio access key | string |
 | minio\_secret\_key | Minio secret key | string |
-| use_canary | Minio canary deployment | bool |
+
 
 ### Example
 Example-code that shows how to use the module, and, if applicable, its different use cases.

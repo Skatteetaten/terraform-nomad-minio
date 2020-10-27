@@ -46,6 +46,7 @@ data "template_file" "nomad_job_minio" {
     data_dir        = var.data_dir
     envs            = local.minio_env_vars
     use_host_volume = var.use_host_volume
+    use_canary      = var.use_canary
 
   }
 }

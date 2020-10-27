@@ -1,4 +1,8 @@
 # Changelog
+## [0.3.0 UNRELEASED]
+
+### Added
+- Added canary deployment and switch #64
 
 ## [0.2.0]
 

@@ -3,6 +3,7 @@
 
 ### Added
 - Added canary deployment and switch #64
+- Added intentions sections to README.md #65
 
 ## [0.2.0]
 

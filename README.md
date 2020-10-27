@@ -1,6 +1,26 @@
 <!-- markdownlint-disable MD041 -->
 <p align="center"><a href="https://github.com/fredrikhgrelland/vagrant-hashistack-template" alt="Built on"><img src="https://img.shields.io/badge/Built%20from%20template-Vagrant--hashistack--template-blue?style=for-the-badge&logo=github"/></a><p align="center"><a href="https://github.com/fredrikhgrelland/vagrant-hashistack" alt="Built on"><img src="https://img.shields.io/badge/Powered%20by%20-Vagrant--hashistack-orange?style=for-the-badge&logo=vagrant"/></a></p></p>
 
+## Content
+1. [Terraform-nomad-minio](#terraform-nomad-minio)
+2. [Compatibility](#compatibility)
+3. [Usage](#usage)
+    1. [Providers](#providers)
+    2. [Intentions](#intentions)
+4. [Requirements](#requirements)
+    1. [Required modules](#required-modules)
+    2. [Required software](#required-software)
+    3. [Other](#other)
+5. [Inputs](#inputs)
+6. [Outputs](#outputs)
+    1. [Example](#example)
+7. [Vault secrets](#vault-secrets)
+8. [Volumes](#volumes)
+9. [Verifyin setup](#verifying-setup)
+10. [Authors](#authors)
+11. [Licence](#license)
+
+
 # Terraform-nomad-minio
 
 Terraform-nomad-minio module is IaC - infrastructure as code. Module contains a nomad job with [minio](https://min.io).
@@ -8,22 +28,38 @@ Terraform-nomad-minio module is IaC - infrastructure as code. Module contains a 
 - [docker driver](https://www.nomadproject.io/docs/drivers/docker.html)
 
 ## Compatibility
-|Software|OSS Version|Enterprise Version|
-|:--|:--|:--|
-|Terraform|0.13.0 or newer||
-|Consul|1.8.3 or newer|1.8.3 or newer|
-|Vault|1.5.2.1 or newer|1.5.2.1 or newer|
-|Nomad|0.12.3 or newer|0.12.3 or newer|
+| Software | OSS Version | Enterprise Version |
+| :------- | :---------- | :-------- |
+| Terraform | 0.13.0 or newer|  |
+| Consul | 1.8.3 or newer | 1.8.3 or newer |
+| Vault | 1.5.2.1 or newer | 1.5.2.1 or newer |
+| Nomad | 0.12.3 or newer | 0.12.3 or newer |
+
 
 ## Usage
 ```text
 make up
 ```
-
 Command will run an example with standalone instance of minio.
 Minio example instance has:
 - [buckets ["one", "two"]](./example/main.tf)
 - [different type of files uploaded to bucket `one/`](./dev/ansible/04_upload_files.yml)
+
+### Providers
+- [Nomad](https://registry.terraform.io/providers/hashicorp/nomad/latest/docs)
+
+### Intentions
+Intentions are required when [consul acl is enabled and default_policy is deny](https://learn.hashicorp.com/tutorials/consul/access-control-setup-production#enable-acls-on-the-agents).
+In the examples, intentions are created in the Ansible playboook [00_create_intention.yml](dev/ansible/00_create_intention.yml):
+
+| Intention between | type |
+| :---------------- | :--- |
+| mc => minio | allow |
+| minio-local => minio | allow |
+
+> :warning: Note that these intentions needs to be created if you are using the module in another module and (consul acl enabled with default policy deny).
+>
+
 
 ### Requirements
 
@@ -34,9 +70,6 @@ Minio example instance has:
 - [consul](https://releases.hashicorp.com/consul/) binary available on `PATH` on the local machine.
 
 #### Other
-
-### Providers
-- [Nomad](https://registry.terraform.io/providers/hashicorp/nomad/latest/docs)
 
 ## Inputs
 | Name | Description | Type | Default | Required |
@@ -112,7 +145,7 @@ We are using [host volume](https://www.nomadproject.io/docs/job-specification/vo
 Minio data will now be available in the `persistence/minio` folder.
 
 
-### Verifying setup
+## Verifying setup
 
 You can verify successful run with next steps:
 

@@ -57,7 +57,7 @@ Minio example instance has:
 | mc\_container\_image | Minio client docker image | string | "minio/mc:latest" | yes |
 | mc\_container\_environment\_variables | Additional minio client container environment variables | list(string) | [] | no |
 | buckets | List of buckets to create on startup | list(string) | [] | no |
-| use_canary | Minio canary deployment | bool |
+| use_canary | Minio canary deployment | bool | false | no |
 
 
 ## Outputs

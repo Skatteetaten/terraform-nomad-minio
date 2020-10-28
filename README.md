@@ -114,7 +114,7 @@ vault kv get -field='secret_key' secret/minio
 We are using [host volume](https://www.nomadproject.io/docs/job-specification/volume) to store minio data.
 Minio data will now be available in the `persistence/minio` folder.
 
-### Example
+## Example
 Example-code that shows how to use the module, and, if applicable, its different use cases.
 
 ```hcl-terraform

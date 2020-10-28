@@ -13,10 +13,10 @@
     2. [Intentions](#intentions)
 5. [Inputs](#inputs)
 6. [Outputs](#outputs)
-    1. [Example](#example)
 7. [Vault secrets](#vault-secrets)
 8. [Volumes](#volumes)
-9. [Verifying setup](#verifying-setup)
+9. [Example](#example)
+    1. [Verifying setup](#verifying-setup)
 10. [Authors](#authors)
 11. [Licence](#license)
 
@@ -35,6 +35,15 @@ Terraform-nomad-minio module is IaC - infrastructure as code. Module contains a 
 | Vault | 1.5.2.1 or newer | 1.5.2.1 or newer |
 | Nomad | 0.12.3 or newer | 0.12.3 or newer |
 
+### Requirements
+
+#### Required modules
+
+#### Required software
+- [GNU make](https://man7.org/linux/man-pages/man1/make.1.html)
+- [consul](https://releases.hashicorp.com/consul/) binary available on `PATH` on the local machine.
+
+#### Other
 
 ## Usage
 ```text
@@ -59,17 +68,6 @@ In the examples, intentions are created in the Ansible playboook [00_create_inte
 
 > :warning: Note that these intentions needs to be created if you are using the module in another module and (consul acl enabled with default policy deny).
 >
-
-
-### Requirements
-
-#### Required modules
-
-#### Required software
-- [GNU make](https://man7.org/linux/man-pages/man1/make.1.html)
-- [consul](https://releases.hashicorp.com/consul/) binary available on `PATH` on the local machine.
-
-#### Other
 
 ## Inputs
 | Name | Description | Type | Default | Required |
@@ -100,6 +98,21 @@ In the examples, intentions are created in the Ansible playboook [00_create_inte
 | minio\_access\_key | Minio access key | string |
 | minio\_secret\_key | Minio secret key | string |
 
+## Vault secrets
+The minio access_key and secret_key is generated and put in `/secret/minio` inside Vault.
+
+To get the username and password from Vault you can login to the [Vault-UI](http://localhost:8200/) with token `master` and reveal the username and password in `/secret/minio`.
+Alternatively, you can ssh into the vagrant box with `vagrant ssh`, and use the vault binary to get the access_key and secret_key. See the following commands:
+```sh
+# get access_key
+vault kv get -field='access_key' secret/minio
+
+# get secret_key
+vault kv get -field='secret_key' secret/minio
+```
+## Volumes
+We are using [host volume](https://www.nomadproject.io/docs/job-specification/volume) to store minio data.
+Minio data will now be available in the `persistence/minio` folder.
 
 ### Example
 Example-code that shows how to use the module, and, if applicable, its different use cases.
@@ -128,24 +141,8 @@ module "minio" {
   buckets                         = ["one", "two"]
 }
 ```
-## Vault secrets
-The minio access_key and secret_key is generated and put in `/secret/minio` inside Vault.
 
-To get the username and password from Vault you can login to the [Vault-UI](http://localhost:8200/) with token `master` and reveal the username and password in `/secret/minio`.
-Alternatively, you can ssh into the vagrant box with `vagrant ssh`, and use the vault binary to get the access_key and secret_key. See the following commands:
-```sh
-# get access_key
-vault kv get -field='access_key' secret/minio
-
-# get secret_key
-vault kv get -field='secret_key' secret/minio
-```
-## Volumes
-We are using [host volume](https://www.nomadproject.io/docs/job-specification/volume) to store minio data.
-Minio data will now be available in the `persistence/minio` folder.
-
-
-## Verifying setup
+### Verifying setup
 
 You can verify successful run with next steps:
 

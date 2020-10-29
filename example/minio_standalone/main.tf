@@ -12,7 +12,7 @@ module "minio" {
   port                            = 9000
   container_image                 = "minio/minio:latest"
   vault_secret                    = {
-                                      use_vault_provider     = false,
+                                      use_vault_provider     = true,
                                       vault_kv_path          = "secret/minio",
                                       vault_kv_access_key    = "access_key",
                                       vault_kv_secret_key    = "secret_key"

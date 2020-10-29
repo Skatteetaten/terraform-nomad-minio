@@ -47,22 +47,14 @@
   - test
 
 - name: Register access key
-  shell:
-    cmd: vault kv get -field='access_key' secret/minio
-  environment:
-    VAULT_ADDR: "{{ vault_addr }}"
-    VAULT_TOKEN: "{{ vault_token }}"
+  shell: docker exec $(docker ps -a -q --filter ancestor="minio/minio:latest") sh -c "env | grep MINIO_ACCESS_KEY=" | cut -f2 -d"="
   register: access_key
   tags:
   - example-upload
   - test
 
 - name: Register secret key
-  shell:
-    cmd: vault kv get -field='secret_key' secret/minio
-  environment:
-    VAULT_ADDR: "{{ vault_addr }}"
-    VAULT_TOKEN: "{{ vault_token }}"
+  shell: docker exec $(docker ps -a -q --filter ancestor="minio/minio:latest") sh -c "env | grep MINIO_SECRET_KEY=" | cut -f2 -d"="
   register: secret_key
   tags:
   - example-upload

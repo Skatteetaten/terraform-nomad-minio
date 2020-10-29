@@ -81,7 +81,20 @@ job "${service_name}" {
         change_mode = "noop"
         env         = true
         data        = <<EOF
-${envs}
+%{ if use_vault_provider }
+{{ with secret "${vault_kv_path}" }}
+ACCESS_KEY="{{ .Data.data.${vault_kv_access_key} }}"
+SECRET_KEY="{{ .Data.data.${vault_kv_secret_key} }}"
+MINIO_ACCESS_KEY="{{ .Data.data.${vault_kv_access_key} }}"
+MINIO_SECRET_KEY="{{ .Data.data.${vault_kv_secret_key} }}"
+{{ end }}
+%{ else }
+ACCESS_KEY="${access_key}"
+SECRET_KEY="${secret_key}"
+MINIO_ACCESS_KEY="${access_key}"
+MINIO_SECRET_KEY="${secret_key}"
+%{ endif }
+${ envs }
 EOF
       }
       resources {

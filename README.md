@@ -51,7 +51,7 @@ make up
 ```
 Command will run an example with standalone instance of minio.
 Minio example instance has:
-- [buckets ["one", "two"]](./example/main.tf)
+- [buckets ["one", "two"]](example/minio_standalone/main.tf)
 - [different type of files uploaded to bucket `one/`](./dev/ansible/04_upload_files.yml)
 
 ### Providers

@@ -5,6 +5,11 @@
 - Added canary deployment and switch #64
 - Added intentions sections to README.md #65
 
+### Changed
+
+- Proper rendering of credentials #66
+- Removed box example [no issue]
+
 ## [0.2.0]
 
 ### Added

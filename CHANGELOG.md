@@ -4,6 +4,8 @@
 ### Added
 - Added canary deployment and switch #64
 - Added intentions sections to README.md #65
+- Added input variable and template stanza for Consul Connect upstreams
+- Added input variable for MC extra commands, appended to command in MC job
 
 ## [0.2.0]
 

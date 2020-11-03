@@ -60,9 +60,9 @@ job "${service_name}" {
       driver = "docker"
 
   %{ if use_vault_provider }
-  vault {
-  policies = "${vault_kv_policy_name}"
-  }
+      vault {
+        policies = "${vault_kv_policy_name}"
+      }
   %{ endif }
 
   %{ if use_host_volume }

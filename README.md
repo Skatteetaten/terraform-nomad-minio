@@ -94,8 +94,8 @@ In the examples, intentions are created in the Ansible playboook [00_create_inte
 | vault_secret.use_vault_provider | Set if want to access secrets from Vault | bool | true |
 | vault_secret.vault_kv_policy_name | Vault policy name to read secrets | string | "kv-secret" |
 | vault_secret.vault_kv_path | Path to the secret key in Vault | string | "secret/minio" |
-| vault_secret.vault_kv_username_name | Secret key name in Vault kv path | string | "access_key" |
-| vault_secret.vault_kv_password_name | Secret key name in Vault kv path | string | "secret_key" |
+| vault_secret.vault_kv_access_key | Secret key name in Vault kv path | string | "access_key" |
+| vault_secret.vault_kv_secret_key | Secret key name in Vault kv path | string | "secret_key" |
 
 
 ## Outputs
@@ -108,7 +108,7 @@ In the examples, intentions are created in the Ansible playboook [00_create_inte
 ## Vault secrets
 The minio access_key and secret_key is generated and put in `/secret/data/minio` inside Vault.
 
-To get the username and password from Vault you can login to the [Vault-UI](http://localhost:8200/) with token `master` and reveal the username and password in `/secret/minio`.
+To get the access_key and secret_key from Vault you can login to the [Vault-UI](http://localhost:8200/) with token `master` and reveal the access_key and secret_key in `/secret/minio`.
 Alternatively, you can ssh into the vagrant box with `vagrant ssh`, and use the vault binary to get the access_key and secret_key. See the following commands:
 ```sh
 # get access_key
@@ -147,14 +147,14 @@ module "minio" {
                     use_vault_provider     = true,
                     vault_kv_policy_name   = "kv-secret"
                     vault_kv_path          = "secret/minio",
-                    vault_kv_username_name = "access_key",
-                    vault_kv_password_name = "secret_key"
+                    vault_kv_access_key    = "access_key",
+                    vault_kv_secret_key    = "secret_key"
                   }
 }
 ```
 
 If you want to change the secrets path and keys/values in Vault with your own configuration you would need to change the variables in the `vault_secret`-object.
-Say that you have put your secrets in `secret/services/minio/users` and change the keys to `minio` and `minio123`. Then you need to do the following configuration:
+Say that you have put your secrets in `secret/services/minio/users` and change the keys to `alt_access_key` and `alt_secret_key`. Then you need to do the following configuration:
 ```hcl
 module "minio" {
 ...
@@ -162,8 +162,8 @@ module "minio" {
                     use_vault_provider     = true,
                     vault_kv_policy_name   = "kv-users-secret"
                     vault_kv_path          = "secret/services/minio/users",
-                    vault_kv_username_name = "minio",
-                    vault_kv_password_name = "minio123"
+                    vault_kv_access_key    = "alt_access_key",
+                    vault_kv_secret_key    = "alt_secret_key"
                   }
 }
 ```

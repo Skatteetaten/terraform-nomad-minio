@@ -52,7 +52,16 @@ job "${service_name}" {
         timeout   = "4s"
       }
       connect {
-        sidecar_service {}
+        sidecar_service {
+ %{ for upstream in jsondecode(upstreams) }
+          proxy {
+            upstreams {
+              destination_name = "${upstream.service_name}"
+              local_bind_port = "${upstream.port}"
+            }
+          }
+%{ endfor }
+        }
       }
     }
 

@@ -53,14 +53,14 @@ job "${service_name}" {
       }
       connect {
         sidecar_service {
- %{ for upstream in jsondecode(upstreams) }
           proxy {
+ %{ for upstream in jsondecode(upstreams) }
             upstreams {
               destination_name = "${upstream.service_name}"
               local_bind_port = "${upstream.port}"
             }
-          }
 %{ endfor }
+          }
         }
       }
     }

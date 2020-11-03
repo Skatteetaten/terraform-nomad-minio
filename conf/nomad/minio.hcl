@@ -57,7 +57,7 @@ job "${service_name}" {
  %{ for upstream in jsondecode(upstreams) }
             upstreams {
               destination_name = "${upstream.service_name}"
-              local_bind_port = "${upstream.port}"
+              local_bind_port  = "${upstream.port}"
             }
 %{ endfor }
           }

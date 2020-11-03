@@ -93,7 +93,7 @@ In the examples, intentions are created in the Ansible playboook [00_create_inte
 | use\_canary | Minio canary deployment | bool | false | no |
 | vault_secret.use_vault_provider | Set if want to access secrets from Vault | bool | true |
 | vault_secret.vault_kv_policy_name | Vault policy name to read secrets | string | "kv-secret" |
-| vault_secret.vault_kv_path | Path to the secret key in Vault | string | "secret/data/minio" |
+| vault_secret.vault_kv_path | Path to the secret key in Vault | string | "secret/minio" |
 | vault_secret.vault_kv_username_name | Secret key name in Vault kv path | string | "access_key" |
 | vault_secret.vault_kv_password_name | Secret key name in Vault kv path | string | "secret_key" |
 
@@ -112,13 +112,13 @@ To get the username and password from Vault you can login to the [Vault-UI](http
 Alternatively, you can ssh into the vagrant box with `vagrant ssh`, and use the vault binary to get the access_key and secret_key. See the following commands:
 ```sh
 # get access_key
-vault kv get -field='access_key' secret/data/minio
+vault kv get -field='access_key' secret/minio
 
 # get secret_key
-vault kv get -field='secret_key' secret/data/minio
+vault kv get -field='secret_key' secret/minio
 ```
 ### Set credentials manually
-To set the credentials manually you first need to tell the module to not fetch credentials from vault. To do that, set `vault_secret.use_vault_provider` to `false` (see below for example). If this is done the module will use the variables `access_key` and `secret_key` to set the minio credentials. These will default to `minio` if not set by the user.  
+To set the credentials manually you first need to tell the module to not fetch credentials from vault. To do that, set `vault_secret.use_vault_provider` to `false` (see below for example). If this is done the module will use the variables `access_key` and `secret_key` to set the minio credentials. These will default to `minio` and `minio123` if not set by the user.  
 Below is an example on how to disable the use of vault credentials, and setting your own credentials.
 
 ```hcl-terraform
@@ -127,7 +127,7 @@ module "minio" {
   vault_secret                    = {
                                       use_vault_provider     = true,
                                       vault_kv_policy_name   = "kv-secret",
-                                      vault_kv_path          = "secret/data/minio",
+                                      vault_kv_path          = "secret/minio",
                                       vault_kv_access_key    = "minio",
                                       vault_kv_secret_key    = "minio123"
                                     }
@@ -145,7 +145,7 @@ module "minio" {
   vault_secret  = {
                     use_vault_provider     = true,
                     vault_kv_policy_name   = "kv-secret"
-                    vault_kv_path          = "secret/data/minio",
+                    vault_kv_path          = "secret/minio",
                     vault_kv_username_name = "access_key",
                     vault_kv_password_name = "secret_key"
                   }

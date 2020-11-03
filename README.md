@@ -14,6 +14,8 @@
 5. [Inputs](#inputs)
 6. [Outputs](#outputs)
 7. [Vault secrets](#vault-secrets)
+    1.[Set credentials manually](#set-credentials-manually)
+    2.[Set credentials using Vault secrets](#set-credentials-using-vault-secrets)
 8. [Volumes](#volumes)
 9. [Example](#example)
     1. [Verifying setup](#verifying-setup)
@@ -89,6 +91,11 @@ In the examples, intentions are created in the Ansible playboook [00_create_inte
 | mc\_container\_environment\_variables | Additional minio client container environment variables | list(string) | [] | no |
 | buckets | List of buckets to create on startup | list(string) | [] | no |
 | use\_canary | Minio canary deployment | bool | false | no |
+| vault_secret.use_vault_provider | Set if want to access secrets from Vault | bool | true |
+| vault_secret.vault_kv_policy_name | Vault policy name to read secrets | string | "kv-secret" |
+| vault_secret.vault_kv_path | Path to the secret key in Vault | string | "secret/data/minio" |
+| vault_secret.vault_kv_username_name | Secret key name in Vault kv path | string | "access_key" |
+| vault_secret.vault_kv_password_name | Secret key name in Vault kv path | string | "secret_key" |
 
 
 ## Outputs
@@ -99,16 +106,65 @@ In the examples, intentions are created in the Ansible playboook [00_create_inte
 | minio\_secret\_key | Minio secret key | string |
 
 ## Vault secrets
-The minio access_key and secret_key is generated and put in `/secret/minio` inside Vault.
+The minio access_key and secret_key is generated and put in `/secret/data/minio` inside Vault.
 
 To get the username and password from Vault you can login to the [Vault-UI](http://localhost:8200/) with token `master` and reveal the username and password in `/secret/minio`.
 Alternatively, you can ssh into the vagrant box with `vagrant ssh`, and use the vault binary to get the access_key and secret_key. See the following commands:
 ```sh
 # get access_key
-vault kv get -field='access_key' secret/minio
+vault kv get -field='access_key' secret/data/minio
 
 # get secret_key
-vault kv get -field='secret_key' secret/minio
+vault kv get -field='secret_key' secret/data/minio
+```
+### Set credentials manually
+To set the credentials manually you first need to tell the module to not fetch credentials from vault. To do that, set `vault_secret.use_vault_provider` to `false` (see below for example). If this is done the module will use the variables `access_key` and `secret_key` to set the minio credentials. These will default to `minio` if not set by the user.  
+Below is an example on how to disable the use of vault credentials, and setting your own credentials.
+
+```hcl-terraform
+module "minio" {
+...
+  vault_secret                    = {
+                                      use_vault_provider     = true,
+                                      vault_kv_policy_name   = "kv-secret",
+                                      vault_kv_path          = "secret/data/minio",
+                                      vault_kv_access_key    = "minio",
+                                      vault_kv_secret_key    = "minio123"
+                                    }
+```
+
+### Set credentials using Vault secrets
+By default `use_vault_provider` is set to `false`. 
+However, when testing using the box (e.g. `make dev`) the minio access_key and secret_key is randomly generated and put in `secret/data/minio` inside Vault, from the [01_generate_secrets_vault.yml](dev/ansible/01_generate_secrets_vault.yml) playbook. 
+This is an independent process and will run regardless of the `vault_secret.use_vault_provider` is `false/true`. 
+
+If you want to use the automatically generated credentials in the box, you can do so by changing the `vault_secret` object as seen below:
+```hcl-terraform
+module "minio" {
+...
+  vault_secret  = {
+                    use_vault_provider     = true,
+                    vault_kv_policy_name   = "kv-secret"
+                    vault_kv_path          = "secret/data/minio",
+                    vault_kv_username_name = "access_key",
+                    vault_kv_password_name = "secret_key"
+                  }
+}
+```
+
+If you want to change the secrets path and keys/values in Vault with your own configuration you would need to change the variables in the `vault_secret`-object. 
+Say that you have put your secrets in `secret/services/minio/users` and change the keys to `minio` and `minio123`. Then you need to do the following configuration:
+```hcl-terraform
+module "minio" {
+...
+  vault_secret  = {
+                    use_vault_provider     = true,
+                    vault_kv_policy_name   = "kv-users-secret"
+                    vault_kv_path          = "secret/services/minio/users",
+                    vault_kv_username_name = "minio",
+                    vault_kv_password_name = "minio123"
+                  }
+}
 ```
 ## Volumes
 We are using [host volume](https://www.nomadproject.io/docs/job-specification/volume) to store minio data.

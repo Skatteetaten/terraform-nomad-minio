@@ -58,6 +58,13 @@ job "${service_name}" {
 
     task "server" {
       driver = "docker"
+
+  %{ if use_vault_provider }
+  vault {
+  policies = "${vault_kv_policy_name}"
+  }
+  %{ endif }
+
   %{ if use_host_volume }
       volume_mount {
         volume      = "persistence"

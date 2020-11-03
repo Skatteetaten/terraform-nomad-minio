@@ -38,6 +38,7 @@ data "template_file" "nomad_job_minio" {
     access_key            = var.access_key
     secret_key            = var.secret_key
     use_vault_provider    = var.vault_secret.use_vault_provider
+    vault_kv_policy_name  = var.vault_secret.vault_kv_policy_name
     vault_kv_path         = var.vault_secret.vault_kv_path
     vault_kv_access_key   = var.vault_secret.vault_kv_access_key
     vault_kv_secret_key   = var.vault_secret.vault_kv_secret_key
@@ -61,6 +62,7 @@ data "template_file" "nomad_job_mc" {
     access_key            = var.access_key
     secret_key            = var.secret_key
     use_vault_provider    = var.vault_secret.use_vault_provider
+    vault_kv_policy_name  = var.vault_secret.vault_kv_policy_name
     vault_kv_path         = var.vault_secret.vault_kv_path
     vault_kv_access_key   = var.vault_secret.vault_kv_access_key
     vault_kv_secret_key   = var.vault_secret.vault_kv_secret_key

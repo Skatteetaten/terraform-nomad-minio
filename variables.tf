@@ -106,3 +106,10 @@ variable "minio_upstreams" {
   description = "List of upstream services (list of object with service_name, port)"
   default = []
 }
+
+variable "mc_extra_commands" {
+  type = list(string)
+  default = [""]
+  description = "Extra commands to run in MC container after creating buckets"
+}
+

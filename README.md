@@ -121,16 +121,17 @@ vault kv get -field='secret_key' secret/minio
 To set the credentials manually you first need to tell the module to not fetch credentials from vault. To do that, set `vault_secret.use_vault_provider` to `false` (see below for example). If this is done the module will use the variables `access_key` and `secret_key` to set the minio credentials. These will default to `minio` and `minio123` if not set by the user.  
 Below is an example on how to disable the use of vault credentials, and setting your own credentials.
 
-```hcl-terraform
+```hcl
 module "minio" {
 ...
-  vault_secret                    = {
-                                      use_vault_provider     = true,
-                                      vault_kv_policy_name   = "kv-secret",
-                                      vault_kv_path          = "secret/minio",
-                                      vault_kv_access_key    = "minio",
-                                      vault_kv_secret_key    = "minio123"
-                                    }
+  vault_secret = {
+                    use_vault_provider     = true,
+                    vault_kv_path          = "",
+                    vault_kv_access_key    = "",
+                    vault_kv_secret_key    = ""
+                 }
+  access_key     = "access_key"     # default 'minio'
+  secret_key     = "secret_key"     # default 'minio123'
 ```
 
 ### Set credentials using Vault secrets
@@ -139,7 +140,7 @@ However, when testing using the box (e.g. `make dev`) the minio access_key and s
 This is an independent process and will run regardless of the `vault_secret.use_vault_provider` is `false/true`.
 
 If you want to use the automatically generated credentials in the box, you can do so by changing the `vault_secret` object as seen below:
-```hcl-terraform
+```hcl
 module "minio" {
 ...
   vault_secret  = {
@@ -154,7 +155,7 @@ module "minio" {
 
 If you want to change the secrets path and keys/values in Vault with your own configuration you would need to change the variables in the `vault_secret`-object.
 Say that you have put your secrets in `secret/services/minio/users` and change the keys to `minio` and `minio123`. Then you need to do the following configuration:
-```hcl-terraform
+```hcl
 module "minio" {
 ...
   vault_secret  = {
@@ -173,7 +174,7 @@ Minio data will now be available in the `persistence/minio` folder.
 ## Example
 Example-code that shows how to use the module, and, if applicable, its different use cases.
 
-```hcl-terraform
+```hcl
 module "minio" {
   source = "github.com/fredrikhgrelland/terraform-nomad-minio.git?ref=0.0.3"
 

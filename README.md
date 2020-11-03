@@ -89,6 +89,9 @@ In the examples, intentions are created in the Ansible playboook [00_create_inte
 | mc\_container\_environment\_variables | Additional minio client container environment variables | list(string) | [] | no |
 | buckets | List of buckets to create on startup | list(string) | [] | no |
 | use\_canary | Minio canary deployment | bool | false | no |
+| minio\_upstreams | List up connect upstreams | list(object) | [] | no |
+| mc\_extra\_commands | Extra commands to run in MC container after creating buckets | list(string) | [] | no |
+
 
 
 ## Outputs

@@ -134,9 +134,9 @@ module "minio" {
 ```
 
 ### Set credentials using Vault secrets
-By default `use_vault_provider` is set to `false`. 
-However, when testing using the box (e.g. `make dev`) the minio access_key and secret_key is randomly generated and put in `secret/data/minio` inside Vault, from the [01_generate_secrets_vault.yml](dev/ansible/01_generate_secrets_vault.yml) playbook. 
-This is an independent process and will run regardless of the `vault_secret.use_vault_provider` is `false/true`. 
+By default `use_vault_provider` is set to `false`.
+However, when testing using the box (e.g. `make dev`) the minio access_key and secret_key is randomly generated and put in `secret/data/minio` inside Vault, from the [01_generate_secrets_vault.yml](dev/ansible/01_generate_secrets_vault.yml) playbook.
+This is an independent process and will run regardless of the `vault_secret.use_vault_provider` is `false/true`.
 
 If you want to use the automatically generated credentials in the box, you can do so by changing the `vault_secret` object as seen below:
 ```hcl-terraform
@@ -152,7 +152,7 @@ module "minio" {
 }
 ```
 
-If you want to change the secrets path and keys/values in Vault with your own configuration you would need to change the variables in the `vault_secret`-object. 
+If you want to change the secrets path and keys/values in Vault with your own configuration you would need to change the variables in the `vault_secret`-object.
 Say that you have put your secrets in `secret/services/minio/users` and change the keys to `minio` and `minio123`. Then you need to do the following configuration:
 ```hcl-terraform
 module "minio" {

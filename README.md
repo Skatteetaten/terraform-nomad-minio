@@ -125,18 +125,18 @@ Below is an example on how to disable the use of vault credentials, and setting 
 module "minio" {
 ...
   vault_secret = {
-                    use_vault_provider     = true,
+                    use_vault_provider     = false,
                     vault_kv_path          = "",
                     vault_kv_access_key    = "",
                     vault_kv_secret_key    = ""
                  }
-  access_key     = "some-user-provided-acces-key"       # default 'minio'
-  secret_key     = "some-user-provided-secret-key"      # default 'minio123'
+  access_key     = "some-user-provided-access-key"       # default 'minio'
+  secret_key     = "some-user-provided-secret-key"       # default 'minio123'
 ```
 
 ### Set credentials using Vault secrets
 By default `use_vault_provider` is set to `false`.
-However, when testing using the box (e.g. `make dev`) the minio access_key and secret_key is randomly generated and put in `secret/data/minio` inside Vault, from the [01_generate_secrets_vault.yml](dev/ansible/01_generate_secrets_vault.yml) playbook.
+However, when testing using the box (e.g. `make dev`) the minio access_key and secret_key is randomly generated and put in `secret/minio` inside Vault, from the [01_generate_secrets_vault.yml](dev/ansible/01_generate_secrets_vault.yml) playbook.
 This is an independent process and will run regardless of the `vault_secret.use_vault_provider` is `false/true`.
 
 If you want to use the automatically generated credentials in the box, you can do so by changing the `vault_secret` object as seen below:

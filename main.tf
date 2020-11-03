@@ -47,7 +47,7 @@ data "template_file" "nomad_job_minio" {
     envs            = local.minio_env_vars
     use_host_volume = var.use_host_volume
     use_canary      = var.use_canary
-    upstreams = jsonencode(var.minio_upstreams)
+    upstreams       = jsonencode(var.minio_upstreams)
   }
 }
 
@@ -83,4 +83,3 @@ resource "nomad_job" "nomad_job_mc" {
     nomad_job.nomad_job_minio
   ]
 }
-

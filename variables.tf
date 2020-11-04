@@ -97,3 +97,18 @@ variable "buckets" {
   description = "List of buckets to create on startup"
   default     = []
 }
+
+variable "minio_upstreams" {
+  type = list(object({
+    service_name = string,
+    port         = number,
+  }))
+  description = "List of upstream services (list of object with service_name, port)"
+  default     = []
+}
+
+variable "mc_extra_commands" {
+  type        = list(string)
+  default     = [""]
+  description = "Extra commands to run in MC container after creating buckets"
+}

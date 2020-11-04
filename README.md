@@ -13,7 +13,7 @@
     2. [Intentions](#intentions)
 5. [Inputs](#inputs)
 6. [Outputs](#outputs)
-7. [Credentials](#credentials)
+7. [Secrets & Credentials](#secrets--credentials)
     1.[Set credentials manually](#set-credentials-manually)
     2.[Set credentials using Vault secrets](#set-credentials-using-vault-secrets)
 8. [Volumes](#volumes)
@@ -105,17 +105,17 @@ In the examples, intentions are created in the Ansible playboook [00_create_inte
 | minio\_access\_key | Minio access key | string |
 | minio\_secret\_key | Minio secret key | string |
 
-## Credentials
+## Secrets & Credentials
 The minio access_key and secret_key is generated and put in `/secret/data/minio` inside Vault.
 
 To get the access_key and secret_key from Vault you can login to the [Vault-UI](http://localhost:8200/) with token `master` and reveal the access_key and secret_key in `/secret/minio`.
 Alternatively, you can ssh into the vagrant box with `vagrant ssh`, and use the vault binary to get the access_key and secret_key. See the following commands:
 ```sh
 # get access_key
-vault kv get -field='access_key' secret/data/minio
+vault kv get -field='access_key' secret/minio
 
 # get secret_key
-vault kv get -field='secret_key' secret/data/minio
+vault kv get -field='secret_key' secret/minio
 ```
 ### Set credentials manually
 To set the credentials manually you first need to tell the module to not fetch credentials from vault. To do that, set `vault_secret.use_vault_provider` to `false` (see below for example). If this is done the module will use the variables `access_key` and `secret_key` to set the minio credentials. These will default to `minio` and `minio123` if not set by the user.  

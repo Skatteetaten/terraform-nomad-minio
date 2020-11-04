@@ -96,6 +96,8 @@ In the examples, intentions are created in the Ansible playboook [00_create_inte
 | vault_secret.vault_kv_path | Path to the secret key in Vault | string | "secret/minio" |
 | vault_secret.vault_kv_access_key | Secret key name in Vault kv path | string | "access_key" |
 | vault_secret.vault_kv_secret_key | Secret key name in Vault kv path | string | "secret_key" |
+| minio\_upstreams | List up connect upstreams | list(object) | [] | no |
+| mc\_extra\_commands | Extra commands to run in MC container after creating buckets | list(string) | [] | no |
 
 
 ## Outputs

@@ -22,7 +22,7 @@ locals {
       "$MINIO_SECRET_KEY",
   ])
   mc_create_bucket_command = concat(["mc", "mb", "-p"], local.mc_formatted_bucket_list)
-  command                  = join(" ", concat(local.mc_add_config_command, ["&&"], local.mc_create_bucket_command))
+  command                  = join(" ", concat(local.mc_add_config_command, ["&&"], local.mc_create_bucket_command, [";"], concat(var.mc_extra_commands)))
 }
 
 data "template_file" "nomad_job_minio" {
@@ -46,6 +46,8 @@ data "template_file" "nomad_job_minio" {
     envs                  = local.minio_env_vars
     use_host_volume       = var.use_host_volume
     use_canary            = var.use_canary
+    upstreams       = jsonencode(var.minio_upstreams)
+
   }
 }
 
@@ -85,4 +87,3 @@ resource "nomad_job" "nomad_job_mc" {
     nomad_job.nomad_job_minio
   ]
 }
-

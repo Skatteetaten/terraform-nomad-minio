@@ -176,7 +176,7 @@ Example-code that shows how to use the module, and, if applicable, its different
 
 ```hcl
 module "minio" {
-  source = "github.com/fredrikhgrelland/terraform-nomad-minio.git?ref=0.0.3"
+  source = "../.."
 
   # nomad
   nomad_datacenters               = ["dc1"]
@@ -188,9 +188,17 @@ module "minio" {
   host                            = "127.0.0.1"
   port                            = 9000
   container_image                 = "minio/minio:latest"
-  data_dir                        = "/local/data"
+  vault_secret                    = {
+                                      use_vault_provider     = false,
+                                      vault_kv_policy_name   = "",
+                                      vault_kv_path          = "",
+                                      vault_kv_access_key    = "",
+                                      vault_kv_secret_key    = ""
+                                    }
+  data_dir                        = "/minio/data"
   container_environment_variables = ["SOME_VAR_N1=some-value"]
-  use_host_volume                 = false
+  use_host_volume                 = true
+  use_canary                      = true
 
   # minio client
   mc_service_name                 = "mc"

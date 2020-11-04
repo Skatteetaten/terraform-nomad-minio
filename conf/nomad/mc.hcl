@@ -44,7 +44,7 @@ job "${service_name}" {
       }
       template {
         // todo: put under `secrets/`
-        destination = "/.envs"
+        destination = "secrets/.envs"
         change_mode = "noop"
         env = true
         data = <<EOF

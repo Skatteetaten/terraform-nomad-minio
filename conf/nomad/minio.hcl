@@ -67,6 +67,13 @@ job "${service_name}" {
 
     task "server" {
       driver = "docker"
+
+  %{ if use_vault_provider }
+      vault {
+        policies = "${vault_kv_policy_name}"
+      }
+  %{ endif }
+
   %{ if use_host_volume }
       volume_mount {
         volume      = "persistence"
@@ -86,11 +93,20 @@ job "${service_name}" {
         ]
       }
       template {
-        destination = "${data_dir}/.envs"
+        destination = "secrets/.envs"
         change_mode = "noop"
         env         = true
         data        = <<EOF
-${envs}
+%{ if use_vault_provider }
+{{ with secret "${vault_kv_path}" }}
+MINIO_ACCESS_KEY="{{ .Data.data.${vault_kv_access_key} }}"
+MINIO_SECRET_KEY="{{ .Data.data.${vault_kv_secret_key} }}"
+{{ end }}
+%{ else }
+MINIO_ACCESS_KEY="${access_key}"
+MINIO_SECRET_KEY="${secret_key}"
+%{ endif }
+${ envs }
 EOF
       }
       resources {

@@ -78,7 +78,7 @@
 
 - name: Delete terraform related files and folders
   file:
-    path: "../../example/{{ line_item }}"
+    path: "../../example/minio_standalone/{{ line_item }}"
     state: absent
   loop:
     - terraform.tfstate.backup
@@ -90,7 +90,7 @@
 
 - name: Terraform apply to restart purged minio job
   terraform:
-    project_path: ../../example
+    project_path: ../../example/minio_standalone
     force_init: true
     state: present
   register: terraform
@@ -130,19 +130,11 @@
   tags: test
 
 - name: Register access key
-  shell:
-    cmd: vault kv get -field='access_key' secret/minio
-  environment:
-    VAULT_ADDR: "{{ vault_addr }}"
-    VAULT_TOKEN: "{{ vault_token }}"
+  shell: docker exec $(docker ps -a -q --filter ancestor="minio/minio:latest") sh -c "env | grep MINIO_ACCESS_KEY=" | cut -f2 -d"="
   register: access_key
 
 - name: Register secret key
-  shell:
-    cmd: vault kv get -field='secret_key' secret/minio
-  environment:
-    VAULT_ADDR: "{{ vault_addr }}"
-    VAULT_TOKEN: "{{ vault_token }}"
+  shell: docker exec $(docker ps -a -q --filter ancestor="minio/minio:latest") sh -c "env | grep MINIO_SECRET_KEY=" | cut -f2 -d"="
   register: secret_key
   tags: test
 

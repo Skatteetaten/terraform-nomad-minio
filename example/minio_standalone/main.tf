@@ -1,9 +1,5 @@
-data "vault_generic_secret" "minio_secrets" {
-  path  = "secret/minio"
-}
-
 module "minio" {
-  source = "./.."
+  source = "../.."
 
   # nomad
   nomad_datacenters               = ["dc1"]
@@ -15,8 +11,13 @@ module "minio" {
   host                            = "127.0.0.1"
   port                            = 9000
   container_image                 = "minio/minio:latest"
-  access_key                      = data.vault_generic_secret.minio_secrets.data.access_key
-  secret_key                      = data.vault_generic_secret.minio_secrets.data.secret_key
+  vault_secret                    = {
+                                      use_vault_provider     = true,
+                                      vault_kv_policy_name   = "kv-secret",
+                                      vault_kv_path          = "secret/data/minio",
+                                      vault_kv_access_key    = "access_key",
+                                      vault_kv_secret_key    = "secret_key"
+                                    }
   data_dir                        = "/minio/data"
   container_environment_variables = ["SOME_VAR_N1=some-value"]
   use_host_volume                 = true

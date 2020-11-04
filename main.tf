@@ -2,14 +2,10 @@ locals {
   datacenters = join(",", var.nomad_datacenters)
   minio_env_vars = join("\n",
     concat([
-      "MINIO_ACCESS_KEY=${var.access_key}",
-      "MINIO_SECRET_KEY=${var.secret_key}"
     ], var.container_environment_variables)
   )
   mc_env_vars = join("\n",
     concat([
-      "MINIO_ACCESS_KEY=${var.access_key}",
-      "MINIO_SECRET_KEY=${var.secret_key}"
     ], var.mc_container_environment_variables)
   )
 
@@ -30,24 +26,28 @@ locals {
 }
 
 data "template_file" "nomad_job_minio" {
-
   template = file("${path.module}/conf/nomad/minio.hcl")
-
   vars = {
-    datacenters     = local.datacenters
-    namespace       = var.nomad_namespace
-    host_volume     = var.nomad_host_volume
-    image           = var.container_image
-    service_name    = var.service_name
-    host            = var.host
-    port            = var.port
-    access_key      = var.access_key
-    secret_key      = var.secret_key
-    data_dir        = var.data_dir
-    envs            = local.minio_env_vars
-    use_host_volume = var.use_host_volume
-    use_canary      = var.use_canary
+    datacenters           = local.datacenters
+    namespace             = var.nomad_namespace
+    host_volume           = var.nomad_host_volume
+    image                 = var.container_image
+    service_name          = var.service_name
+    host                  = var.host
+    port                  = var.port
+    access_key            = var.access_key
+    secret_key            = var.secret_key
+    use_vault_provider    = var.vault_secret.use_vault_provider
+    vault_kv_policy_name  = var.vault_secret.vault_kv_policy_name
+    vault_kv_path         = var.vault_secret.vault_kv_path
+    vault_kv_access_key   = var.vault_secret.vault_kv_access_key
+    vault_kv_secret_key   = var.vault_secret.vault_kv_secret_key
+    data_dir              = var.data_dir
+    envs                  = local.minio_env_vars
+    use_host_volume       = var.use_host_volume
+    use_canary            = var.use_canary
     upstreams       = jsonencode(var.minio_upstreams)
+
   }
 }
 
@@ -56,15 +56,19 @@ data "template_file" "nomad_job_mc" {
   template = file("${path.module}/conf/nomad/mc.hcl")
 
   vars = {
-    service_name       = var.mc_service_name
-    minio_service_name = var.service_name
-    datacenters        = local.datacenters
-    namespace          = var.nomad_namespace
-    image              = var.mc_container_image
-
-    access_key = var.access_key
-    secret_key = var.secret_key
-    envs       = local.mc_env_vars
+    service_name          = var.mc_service_name
+    minio_service_name    = var.service_name
+    datacenters           = local.datacenters
+    namespace             = var.nomad_namespace
+    image                 = var.mc_container_image
+    access_key            = var.access_key
+    secret_key            = var.secret_key
+    use_vault_provider    = var.vault_secret.use_vault_provider
+    vault_kv_policy_name  = var.vault_secret.vault_kv_policy_name
+    vault_kv_path         = var.vault_secret.vault_kv_path
+    vault_kv_access_key   = var.vault_secret.vault_kv_access_key
+    vault_kv_secret_key   = var.vault_secret.vault_kv_secret_key
+    envs                  = local.mc_env_vars
 
     command = local.command
   }

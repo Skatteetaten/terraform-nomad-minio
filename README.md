@@ -13,7 +13,9 @@
     2. [Intentions](#intentions)
 5. [Inputs](#inputs)
 6. [Outputs](#outputs)
-7. [Vault secrets](#vault-secrets)
+7. [Secrets & Credentials](#secrets--credentials)
+    1.[Set credentials manually](#set-credentials-manually)
+    2.[Set credentials using Vault secrets](#set-credentials-using-vault-secrets)
 8. [Volumes](#volumes)
 9. [Example](#example)
     1. [Verifying setup](#verifying-setup)
@@ -51,7 +53,7 @@ make up
 ```
 Command will run an example with standalone instance of minio.
 Minio example instance has:
-- [buckets ["one", "two"]](./example/main.tf)
+- [buckets ["one", "two"]](example/minio_standalone/main.tf)
 - [different type of files uploaded to bucket `one/`](./dev/ansible/04_upload_files.yml)
 
 ### Providers
@@ -89,8 +91,14 @@ In the examples, intentions are created in the Ansible playboook [00_create_inte
 | mc\_container\_environment\_variables | Additional minio client container environment variables | list(string) | [] | no |
 | buckets | List of buckets to create on startup | list(string) | [] | no |
 | use\_canary | Minio canary deployment | bool | false | no |
+| vault_secret.use_vault_provider | Set if want to access secrets from Vault | bool | true |
+| vault_secret.vault_kv_policy_name | Vault policy name to read secrets | string | "kv-secret" |
+| vault_secret.vault_kv_path | Path to the secret key in Vault | string | "secret/minio" |
+| vault_secret.vault_kv_access_key | Secret key name in Vault kv path | string | "access_key" |
+| vault_secret.vault_kv_secret_key | Secret key name in Vault kv path | string | "secret_key" |
 | minio\_upstreams | List up connect upstreams | list(object) | [] | no |
 | mc\_extra\_commands | Extra commands to run in MC container after creating buckets | list(string) | [] | no |
+
 
 ## Outputs
 | Name | Description | Type |
@@ -99,10 +107,10 @@ In the examples, intentions are created in the Ansible playboook [00_create_inte
 | minio\_access\_key | Minio access key | string |
 | minio\_secret\_key | Minio secret key | string |
 
-## Vault secrets
-The minio access_key and secret_key is generated and put in `/secret/minio` inside Vault.
+## Secrets & Credentials
+The minio access_key and secret_key is generated and put in `/secret/data/minio` inside Vault.
 
-To get the username and password from Vault you can login to the [Vault-UI](http://localhost:8200/) with token `master` and reveal the username and password in `/secret/minio`.
+To get the access_key and secret_key from Vault you can login to the [Vault-UI](http://localhost:8200/) with token `master` and reveal the access_key and secret_key in `/secret/minio`.
 Alternatively, you can ssh into the vagrant box with `vagrant ssh`, and use the vault binary to get the access_key and secret_key. See the following commands:
 ```sh
 # get access_key
@@ -111,6 +119,56 @@ vault kv get -field='access_key' secret/minio
 # get secret_key
 vault kv get -field='secret_key' secret/minio
 ```
+### Set credentials manually
+To set the credentials manually you first need to tell the module to not fetch credentials from vault. To do that, set `vault_secret.use_vault_provider` to `false` (see below for example). If this is done the module will use the variables `access_key` and `secret_key` to set the minio credentials. These will default to `minio` and `minio123` if not set by the user.  
+Below is an example on how to disable the use of vault credentials, and setting your own credentials.
+
+```hcl
+module "minio" {
+...
+  vault_secret = {
+                    use_vault_provider     = false,
+                    vault_kv_path          = "",
+                    vault_kv_access_key    = "",
+                    vault_kv_secret_key    = ""
+                 }
+  access_key     = "some-user-provided-access-key"       # default 'minio'
+  secret_key     = "some-user-provided-secret-key"       # default 'minio123'
+```
+
+### Set credentials using Vault secrets
+By default `use_vault_provider` is set to `false`.
+However, when testing using the box (e.g. `make dev`) the minio access_key and secret_key is randomly generated and put in `secret/minio` inside Vault, from the [01_generate_secrets_vault.yml](dev/ansible/01_generate_secrets_vault.yml) playbook.
+This is an independent process and will run regardless of the `vault_secret.use_vault_provider` is `false/true`.
+
+If you want to use the automatically generated credentials in the box, you can do so by changing the `vault_secret` object as seen below:
+```hcl
+module "minio" {
+...
+  vault_secret  = {
+                    use_vault_provider     = true,
+                    vault_kv_policy_name   = "kv-secret"
+                    vault_kv_path          = "secret/minio",
+                    vault_kv_access_key    = "access_key",
+                    vault_kv_secret_key    = "secret_key"
+                  }
+}
+```
+
+If you want to change the secrets path and keys/values in Vault with your own configuration you would need to change the variables in the `vault_secret`-object.
+Say that you have put your secrets in `secret/services/minio/users` and change the keys to `alt_access_key` and `alt_secret_key`. Then you need to do the following configuration:
+```hcl
+module "minio" {
+...
+  vault_secret  = {
+                    use_vault_provider     = true,
+                    vault_kv_policy_name   = "kv-users-secret"
+                    vault_kv_path          = "secret/services/minio/users",
+                    vault_kv_access_key    = "alt_access_key",
+                    vault_kv_secret_key    = "alt_secret_key"
+                  }
+}
+```
 ## Volumes
 We are using [host volume](https://www.nomadproject.io/docs/job-specification/volume) to store minio data.
 Minio data will now be available in the `persistence/minio` folder.
@@ -118,9 +176,9 @@ Minio data will now be available in the `persistence/minio` folder.
 ## Example
 Example-code that shows how to use the module, and, if applicable, its different use cases.
 
-```hcl-terraform
+```hcl
 module "minio" {
-  source = "github.com/fredrikhgrelland/terraform-nomad-minio.git?ref=0.0.3"
+  source = "../.."
 
   # nomad
   nomad_datacenters               = ["dc1"]
@@ -132,9 +190,17 @@ module "minio" {
   host                            = "127.0.0.1"
   port                            = 9000
   container_image                 = "minio/minio:latest"
-  data_dir                        = "/local/data"
+  vault_secret                    = {
+                                      use_vault_provider     = false,
+                                      vault_kv_policy_name   = "",
+                                      vault_kv_path          = "",
+                                      vault_kv_access_key    = "",
+                                      vault_kv_secret_key    = ""
+                                    }
+  data_dir                        = "/minio/data"
   container_environment_variables = ["SOME_VAR_N1=some-value"]
-  use_host_volume                 = false
+  use_host_volume                 = true
+  use_canary                      = true
 
   # minio client
   mc_service_name                 = "mc"

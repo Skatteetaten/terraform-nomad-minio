@@ -27,6 +27,13 @@ job "${service_name}" {
 
     task "mc-create-buckets" {
       driver = "docker"
+
+    %{ if use_vault_provider }
+      vault {
+        policies = "${vault_kv_policy_name}"
+      }
+    %{ endif }
+
       config {
         image = "minio/mc:latest"
         entrypoint = [
@@ -36,12 +43,20 @@ job "${service_name}" {
         ]
       }
       template {
-        // todo: put under `local/secrets`
-        destination = "local/data/.envs"
+        destination = "secrets/.envs"
         change_mode = "noop"
         env = true
         data = <<EOF
-${envs}
+%{ if use_vault_provider }
+{{ with secret "${vault_kv_path}" }}
+MINIO_ACCESS_KEY="{{ .Data.data.${vault_kv_access_key} }}"
+MINIO_SECRET_KEY="{{ .Data.data.${vault_kv_secret_key} }}"
+{{ end }}
+%{ else }
+MINIO_ACCESS_KEY="${access_key}"
+MINIO_SECRET_KEY="${secret_key}"
+%{ endif }
+${ envs }
 EOF
       }
     }

@@ -43,11 +43,13 @@ variable "container_image" {
 variable "access_key" {
   type        = string
   description = "Minio access key"
+  default     = "minio"
 }
 
 variable "secret_key" {
   type        = string
   description = "Minio secret key"
+  default     = "minio123"
 }
 
 variable "data_dir" {
@@ -71,6 +73,24 @@ variable "use_canary" {
   type = bool
   description = "Uses canary deployment for Minio"
   default = false
+}
+
+variable "vault_secret" {
+  type = object({
+    use_vault_provider     = bool,
+    vault_kv_policy_name   = string,
+    vault_kv_path          = string,
+    vault_kv_access_key    = string,
+    vault_kv_secret_key    = string
+  })
+  description = "Set of properties to be able to fetch secret from vault"
+  default = {
+    use_vault_provider     = true
+    vault_kv_policy_name   = "kv-secret"
+    vault_kv_path          = "secret/data/minio"
+    vault_kv_access_key    = "access_key"
+    vault_kv_secret_key    = "secret_key"
+  }
 }
 
 # MC

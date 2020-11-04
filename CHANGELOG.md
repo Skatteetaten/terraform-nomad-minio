@@ -7,6 +7,11 @@
 - Added input variable and template stanza for Consul Connect upstreams #72
 - Added input variable for MC extra commands, appended to command in MC job #73
 
+### Changed
+
+- Proper rendering of credentials #66
+- Removed box example [no issue]
+
 ## [0.2.0]
 
 ### Added

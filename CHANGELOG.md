@@ -6,6 +6,8 @@
 - Added intentions sections to README.md #65
 - Added input variable and template stanza for Consul Connect upstreams #72
 - Added input variable for MC extra commands, appended to command in MC job #73
+- Added user defined variables for resources #70
+- Added output for minio port number #77
 
 ### Changed
 

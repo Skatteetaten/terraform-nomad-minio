@@ -110,8 +110,8 @@ ${ envs }
 EOF
       }
       resources {
-        cpu     = 200
-        memory  = 1024
+        cpu     = ${cpu}
+        memory  = ${memory}
       }
     }
   }

@@ -194,7 +194,7 @@ module "minio" {
   port                            = 9000
 
   memory                          = 2048
-  cpu                             = 500 
+  cpu                             = 500
 
   container_image                 = "minio/minio:latest"
   vault_secret                    = {

@@ -34,6 +34,18 @@ variable "port" {
   default     = 9000
 }
 
+variable "cpu" {
+  type        = number
+  description = "CPU allocation for Minio"
+  default     = 200
+}
+
+variable "memory" {
+  type        = number
+  description = "Memory allocation for Minio"
+  default     = 1024
+}
+
 variable "container_image" {
   type        = string
   description = "Minio docker image"

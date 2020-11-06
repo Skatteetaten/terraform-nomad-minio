@@ -14,3 +14,8 @@ output "minio_secret_key" {
   value       = data.template_file.nomad_job_minio.vars.secret_key
   sensitive   = true
 }
+
+output "minio_port" {
+  description = "Minio port number"
+  value = data.template_file.nomad_job_minio.vars.port
+}

@@ -35,6 +35,8 @@ data "template_file" "nomad_job_minio" {
     service_name          = var.service_name
     host                  = var.host
     port                  = var.port
+    cpu                   = var.cpu
+    memory                = var.memory
     access_key            = var.access_key
     secret_key            = var.secret_key
     use_vault_provider    = var.vault_secret.use_vault_provider

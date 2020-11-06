@@ -80,6 +80,8 @@ In the examples, intentions are created in the Ansible playboook [00_create_inte
 | service\_name | Minio service name | string | "minio" | yes |
 | host | Minio host | string | "127.0.0.1" | yes |
 | port | Minio port | number | 9000 | yes |
+| memory | Memory allocation for minio | number | 1024 | no |
+| cpu | CPU allocation for minio | number | 200 | no |
 | container\_image | Minio docker image | string | "minio/minio:latest" | yes |
 | access\_key | Minio access key | string | dynamically generated secrets with Vault  | yes |
 | secret\_key | Minio secret key | string | dynamically generated secrets with Vault | yes |
@@ -106,6 +108,7 @@ In the examples, intentions are created in the Ansible playboook [00_create_inte
 | minio\_service\_name | Minio service name | string |
 | minio\_access\_key | Minio access key | string |
 | minio\_secret\_key | Minio secret key | string |
+| minio\_port | Minio port number | number |
 
 ## Secrets & Credentials
 The minio access_key and secret_key is generated and put in `/secret/data/minio` inside Vault.
@@ -189,6 +192,10 @@ module "minio" {
   service_name                    = "minio"
   host                            = "127.0.0.1"
   port                            = 9000
+
+  memory                          = 2048
+  cpu                             = 500 
+
   container_image                 = "minio/minio:latest"
   vault_secret                    = {
                                       use_vault_provider     = false,

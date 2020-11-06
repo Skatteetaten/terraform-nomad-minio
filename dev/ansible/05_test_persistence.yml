@@ -8,7 +8,7 @@
 
 - name: Fetch bootstrap token nomad
   shell:
-    cmd: vault kv get -field=secret-id secret/nomad-bootstrap-token
+    cmd: vault kv get -field=secret-id secret/example/nomad-bootstrap-token
   when: lookup('env', 'nomad_acl') | bool
   environment:
     VAULT_ADDR: "{{ vault_addr }}"

@@ -2,6 +2,7 @@
 ## [0.3.0 UNRELEASED]
 
 ### Added
+
 - Added canary deployment and switch #64
 - Added intentions sections to README.md #65
 - Added input variable and template stanza for Consul Connect upstreams #72
@@ -13,6 +14,7 @@
 
 - Proper rendering of credentials #66
 - Removed box example [no issue]
+- Updated to fit hashistack v0.7.1 #71
 
 ## [0.2.0]
 
@@ -21,6 +23,7 @@
 - Github templates for issues and PRs #54
 
 ### Changed
+
 - Updated up and template_example targets in makefile #48
 - Updated enforce-changelog in github workflow file #50
 - Synced with template and updated box version #52

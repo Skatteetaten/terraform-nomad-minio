@@ -12,7 +12,7 @@
 
 - Proper rendering of credentials #66
 - Removed box example [no issue]
-- Updated to fit hashistack v.0.7.0 #71
+- Updated to fit hashistack v0.7.1 #71
 
 ## [0.2.0]
 

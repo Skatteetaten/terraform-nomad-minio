@@ -43,7 +43,7 @@ No modules required.
 
 #### Required software
 - [GNU make](https://man7.org/linux/man-pages/man1/make.1.html)
-- [consul](https://releases.hashicorp.com/consul/) binary available on `PATH` on the local machine.
+- [Consul](https://releases.hashicorp.com/consul/) binary available on `PATH` on the local machine.
 
 #### Other
 
@@ -58,13 +58,14 @@ Minio example instance has:
 - [different type of files uploaded to bucket `one/`](./dev/ansible/04_upload_files.yml)
 
 ### Verifying setup
-You can verify successful run with next steps:
+You can verify that Minio ran successful by checking the Minio UI.
 
-* create local proxy to minio instance with `consul` binary. Check [required software section](#required-software)
-
+First create a proxy to connect with the Minio service:
 ```text
 make proxy
 ```
+
+You can now visit the UI on [localhost:9000/](http://localhost:9000/).
 
 ### Intentions
 Intentions are required when [consul acl is enabled and default_policy is deny](https://learn.hashicorp.com/tutorials/consul/access-control-setup-production#enable-acls-on-the-agents).

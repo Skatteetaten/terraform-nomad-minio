@@ -9,8 +9,9 @@
     2. [Required software](#required-software)
     3. [Other](#other)
 4. [Usage](#usage)
-    1. [Providers](#providers)
+    1. [Verifying setup](#verifying-setup)
     2. [Intentions](#intentions)
+    3. [Providers](#providers)
 5. [Inputs](#inputs)
 6. [Outputs](#outputs)
 7. [Secrets & Credentials](#secrets--credentials)
@@ -18,13 +19,11 @@
     2.[Set credentials using Vault secrets](#set-credentials-using-vault-secrets)
 8. [Volumes](#volumes)
 9. [Example](#example)
-    1. [Verifying setup](#verifying-setup)
-10. [Authors](#authors)
+10. [Contributors](#contributors)
 11. [Licence](#license)
 
 
 # Terraform-nomad-minio
-
 Terraform-nomad-minio module is IaC - infrastructure as code. Module contains a nomad job with [minio](https://min.io).
 - [consul-connect](https://www.consul.io/docs/connect) integration.
 - [docker driver](https://www.nomadproject.io/docs/drivers/docker.html)
@@ -40,6 +39,7 @@ Terraform-nomad-minio module is IaC - infrastructure as code. Module contains a 
 ### Requirements
 
 #### Required modules
+No modules required.
 
 #### Required software
 - [GNU make](https://man7.org/linux/man-pages/man1/make.1.html)
@@ -48,16 +48,23 @@ Terraform-nomad-minio module is IaC - infrastructure as code. Module contains a 
 #### Other
 
 ## Usage
+The following command will run an example with standalone instance of minio.
 ```text
 make up
 ```
-Command will run an example with standalone instance of minio.
+
 Minio example instance has:
 - [buckets ["one", "two"]](example/minio_standalone/main.tf)
 - [different type of files uploaded to bucket `one/`](./dev/ansible/04_upload_files.yml)
 
-### Providers
-- [Nomad](https://registry.terraform.io/providers/hashicorp/nomad/latest/docs)
+### Verifying setup
+You can verify successful run with next steps:
+
+* create local proxy to minio instance with `consul` binary. Check [required software section](#required-software)
+
+```text
+make proxy
+```
 
 ### Intentions
 Intentions are required when [consul acl is enabled and default_policy is deny](https://learn.hashicorp.com/tutorials/consul/access-control-setup-production#enable-acls-on-the-agents).
@@ -69,7 +76,9 @@ In the examples, intentions are created in the Ansible playboook [00_create_inte
 | minio-local => minio | allow |
 
 > :warning: Note that these intentions needs to be created if you are using the module in another module and (consul acl enabled with default policy deny).
->
+
+### Providers
+- [Nomad](https://registry.terraform.io/providers/hashicorp/nomad/latest/docs)
 
 ## Inputs
 | Name | Description | Type | Default | Required |
@@ -172,6 +181,7 @@ module "minio" {
                   }
 }
 ```
+
 ## Volumes
 We are using [host volume](https://www.nomadproject.io/docs/job-specification/volume) to store minio data.
 Minio data will now be available in the `persistence/minio` folder.
@@ -214,17 +224,14 @@ module "minio" {
 }
 ```
 
-### Verifying setup
-
-You can verify successful run with next steps:
-
-* create local proxy to minio instance with `consul` binary. Check [required software section](#required-software)
-
-```text
-make proxy
-```
-
-## Authors
+## Contributors
+[<img src="https://avatars0.githubusercontent.com/u/40291976?s=64&v=4">](https://github.com/fredrikhgrelland)
+[<img src="https://avatars2.githubusercontent.com/u/29984156?s=64&v=4">](https://github.com/claesgill)
+[<img src="https://avatars3.githubusercontent.com/u/15572799?s=64&v=4">](https://github.com/zhenik)
+[<img src="https://avatars3.githubusercontent.com/u/67954397?s=64&v=4">](https://github.com/Neha-Sinha2305)
+[<img src="https://avatars3.githubusercontent.com/u/71001093?s=64&v=4">](https://github.com/dangernil)
+[<img src="https://avatars1.githubusercontent.com/u/51820995?s=64&v=4">](https://github.com/pdmthorsrud)
+[<img src="https://avatars3.githubusercontent.com/u/10536149?s=64&v=4">](https://github.com/oschistad)
 
 ## License
 This work licensed under Apache 2 License. See [LICENSE](./LICENSE) for full details.

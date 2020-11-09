@@ -7,7 +7,6 @@
 3. [Requirements](#requirements)
     1. [Required modules](#required-modules)
     2. [Required software](#required-software)
-    3. [Other](#other)
 4. [Usage](#usage)
     1. [Verifying setup](#verifying-setup)
     2. [Intentions](#intentions)
@@ -36,16 +35,14 @@ Terraform-nomad-minio module is IaC - infrastructure as code. Module contains a 
 | Vault | 1.5.2.1 or newer | 1.5.2.1 or newer |
 | Nomad | 0.12.3 or newer | 0.12.3 or newer |
 
-### Requirements
+## Requirements
 
-#### Required modules
+### Required modules
 No modules required.
 
-#### Required software
+### Required software
 - [GNU make](https://man7.org/linux/man-pages/man1/make.1.html)
 - [Consul](https://releases.hashicorp.com/consul/) binary available on `PATH` on the local machine.
-
-#### Other
 
 ## Usage
 The following command will run an example with standalone instance of Minio.

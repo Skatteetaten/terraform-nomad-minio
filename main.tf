@@ -48,7 +48,7 @@ data "template_file" "nomad_job_minio" {
     envs                  = local.minio_env_vars
     use_host_volume       = var.use_host_volume
     use_canary            = var.use_canary
-    upstreams       = jsonencode(var.minio_upstreams)
+    upstreams             = jsonencode(var.minio_upstreams)
 
   }
 }
@@ -71,8 +71,7 @@ data "template_file" "nomad_job_mc" {
     vault_kv_access_key   = var.vault_secret.vault_kv_access_key
     vault_kv_secret_key   = var.vault_secret.vault_kv_secret_key
     envs                  = local.mc_env_vars
-
-    command = local.command
+    command               = local.command
   }
 }
 

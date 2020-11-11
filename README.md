@@ -15,8 +15,8 @@
 6. [Inputs](#inputs)
 7. [Outputs](#outputs)
 8. [Secrets & Credentials](#secrets--credentials)
-    1.[Set credentials manually](#set-credentials-manually)
-    2.[Set credentials using Vault secrets](#set-credentials-using-vault-secrets)
+    1. [Set credentials manually](#set-credentials-manually)
+    2. [Set credentials using Vault secrets](#set-credentials-using-vault-secrets)
 9. [Volumes](#volumes)
 10. [Contributors](#contributors)
 11. [Licence](#license)
@@ -115,6 +115,39 @@ module "minio" {
   buckets                         = ["one", "two"]
 }
 ```
+These are the default values for the Minio module.
+```hcl
+module "minio" {
+  source = "../.."
+
+  # nomad
+  nomad_datacenters               = ["dc1"]
+  nomad_namespace                 = "default"
+  nomad_host_volume               = "persistence"
+
+  # minio
+  service_name                    = "minio"
+  host                            = "127.0.0.1"
+  port                            = 9000
+  container_image                 = "minio/minio:latest"
+  vault_secret                    = {
+                                      use_vault_provider     = true,
+                                      vault_kv_policy_name   = "kv-secret",
+                                      vault_kv_path          = "secret/data/minio",
+                                      vault_kv_access_key    = "access_key",        #default minio
+                                      vault_kv_secret_key    = "secret_key"         #default minio123
+                                    }
+  data_dir                        = "/minio/data"
+  container_environment_variables = ["SOME_VAR_N1=some-value"]
+  use_host_volume                 = true
+  use_canary                      = true
+
+  # minio client
+  mc_service_name                 = "mc"
+  mc_container_image              = "minio/mc:latest"
+  buckets                         = ["one", "two"]
+}
+```
 
 ## Inputs
 | Name | Description | Type | Default | Required |
@@ -137,10 +170,10 @@ module "minio" {
 | mc\_container\_image | Minio client docker image | string | "minio/mc:latest" | yes |
 | mc\_container\_environment\_variables | Additional Minio client container environment variables | list(string) | [] | no |
 | buckets | List of buckets to create on startup | list(string) | [] | no |
-| use\_canary | Minio canary deployment | bool | false | no |
+| use\_canary | Minio canary deployment | bool | true | no |
 | vault_secret.use_vault_provider | Set if want to access secrets from Vault | bool | true |
 | vault_secret.vault_kv_policy_name | Vault policy name to read secrets | string | "kv-secret" |
-| vault_secret.vault_kv_path | Path to the secret key in Vault | string | "secret/minio" |
+| vault_secret.vault_kv_path | Path to the secret key in Vault | string | "secret/data/minio" |
 | vault_secret.vault_kv_access_key | Secret key name in Vault kv path | string | "access_key" |
 | vault_secret.vault_kv_secret_key | Secret key name in Vault kv path | string | "secret_key" |
 | minio\_upstreams | List up connect upstreams | list(object) | [] | no |
@@ -185,7 +218,7 @@ module "minio" {
 ```
 
 ### Set credentials using Vault secrets
-By default `use_vault_provider` is set to `false`.
+By default `use_vault_provider` is set to `true`.
 However, when testing using the box (e.g. `make dev`) the Minio access_key and secret_key is randomly generated and put in `secret/minio` inside Vault, from the [01_generate_secrets_vault.yml](dev/ansible/01_generate_secrets_vault.yml) playbook.
 This is an independent process and will run regardless of the `vault_secret.use_vault_provider` is `false/true`.
 

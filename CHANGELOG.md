@@ -4,6 +4,7 @@
 
 ### Added
 - Added skip-duplicate-runs #78
+- test
 
 ### Changed
 - Removed `failed_when` in `01-create_vault_policy_to_read_secrets.yml` & updated README [no issue]

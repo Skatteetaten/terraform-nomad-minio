@@ -24,7 +24,7 @@ job "${service_name}" {
     }
 
   %{ if use_host_volume }
-    volume "${hoste_volume_name}" {
+    volume "${host_volume_name}" {
       type      = "host"
       source    = "${host_volume}"
       read_only = false

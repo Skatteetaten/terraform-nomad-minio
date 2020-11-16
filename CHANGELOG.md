@@ -2,6 +2,9 @@
 
 ## [0.4.0 UNRELEASED]
 
+### Added
+- Dynamic host volume #58
+
 ### Changed
 - Removed `failed_when` in `01-create_vault_policy_to_read_secrets.yml` & updated README [no issue]
 

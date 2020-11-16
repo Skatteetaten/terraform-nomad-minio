@@ -31,6 +31,7 @@ data "template_file" "nomad_job_minio" {
     datacenters           = local.datacenters
     namespace             = var.nomad_namespace
     host_volume           = var.nomad_host_volume
+    host_volume_name      = var.host_volume_name
     image                 = var.container_image
     service_name          = var.service_name
     host                  = var.host

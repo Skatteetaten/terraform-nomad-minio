@@ -21,6 +21,7 @@ module "minio" {
   data_dir                        = "/minio/data"
   container_environment_variables = ["SOME_VAR_N1=some-value"]
   use_host_volume                 = true
+  host_volume_name                = "persistence"
   use_canary                      = true
 
   # minio client

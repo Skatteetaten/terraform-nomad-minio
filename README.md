@@ -80,41 +80,6 @@ In the examples, intentions are created in the Ansible playboook [00_create_inte
 
 ## Example usage
 Example-code that shows how to use the module, and, if applicable, its different use cases.
-
-```hcl
-module "minio" {
-  source = "../.."
-
-  # nomad
-  nomad_datacenters               = ["dc1"]
-  nomad_namespace                 = "default"
-  nomad_host_volume               = "persistence"
-
-  # minio
-  service_name                    = "minio"
-  host                            = "127.0.0.1"
-  port                            = 9000
-  memory                          = 2048
-  cpu                             = 500
-  container_image                 = "minio/minio:latest"
-  vault_secret                    = {
-                                      use_vault_provider     = false,
-                                      vault_kv_policy_name   = "",
-                                      vault_kv_path          = "",
-                                      vault_kv_access_key    = "",
-                                      vault_kv_secret_key    = ""
-                                    }
-  data_dir                        = "/minio/data"
-  container_environment_variables = ["SOME_VAR_N1=some-value"]
-  use_host_volume                 = true
-  use_canary                      = true
-
-  # minio client
-  mc_service_name                 = "mc"
-  mc_container_image              = "minio/mc:latest"
-  buckets                         = ["one", "two"]
-}
-```
 These are the default values for the Minio module.
 ```hcl
 module "minio" {
@@ -140,6 +105,7 @@ module "minio" {
   data_dir                        = "/minio/data"
   container_environment_variables = ["SOME_VAR_N1=some-value"]
   use_host_volume                 = true
+  host_volume_name                = "persistence"
   use_canary                      = true
 
   # minio client

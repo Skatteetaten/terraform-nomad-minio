@@ -36,7 +36,7 @@ job "${service_name}" {
       port = "${port}"
       # https://docs.min.io/docs/minio-monitoring-guide.html
       check {
-        expose    = true
+        //expose    = true
         name      = "${service_name}-live"
         type      = "http"
         path      = "/minio/health/live"
@@ -44,7 +44,7 @@ job "${service_name}" {
         timeout   = "2s"
       }
       check {
-        expose    = true
+        //expose    = true
         name      = "${service_name}-ready"
         type      = "http"
         path      = "/minio/health/ready"

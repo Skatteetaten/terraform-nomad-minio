@@ -21,6 +21,9 @@ job "${service_name}" {
   group "s3" {
     network {
       mode = "bridge"
+      port "healthcheck" {
+       // to = -1
+      }
     }
 
   %{ if use_host_volume }
@@ -35,22 +38,7 @@ job "${service_name}" {
       name = "${service_name}"
       port = "${port}"
       # https://docs.min.io/docs/minio-monitoring-guide.html
-      check {
-        //expose    = true
-        name      = "${service_name}-live"
-        type      = "http"
-        path      = "/minio/health/live"
-        interval  = "10s"
-        timeout   = "2s"
-      }
-      check {
-        //expose    = true
-        name      = "${service_name}-ready"
-        type      = "http"
-        path      = "/minio/health/ready"
-        interval  = "15s"
-        timeout   = "4s"
-      }
+
       connect {
         sidecar_service {
           proxy {
@@ -60,8 +48,49 @@ job "${service_name}" {
               local_bind_port  = "${upstream.port}"
             }
 %{ endfor }
+            expose {
+              path {
+                path            = "/minio/health/live"
+                protocol        = "http"
+                local_path_port = 9000
+                listener_port   = "healthcheck"
+              }
+              path {
+                path            = "/minio/health/ready"
+                protocol        = "http"
+                local_path_port = 9000
+                listener_port   = "healthcheck"
+              }
+            }
           }
         }
+        sidecar_task {
+          driver = "docker"
+          resources {
+            cpu    = 250
+            memory = 128
+          }
+        }
+      }
+      check {
+        //expose    = true
+        //task      = "server"
+        name      = "${service_name}-live"
+        type      = "http"
+        port      = 9000 //${port}
+        path      = "/minio/health/live"
+        interval  = "10s"
+        timeout   = "2s"
+      }
+      check {
+        //expose    = true
+        name      = "${service_name}-ready"
+        type      = "http"
+        port      = 9000
+        path      = "/minio/health/ready"
+        interval  = "15s"
+        timeout   = "4s"
+        //address_mode = "driver"
       }
     }
 

@@ -1,0 +1,11 @@
+version: 3
+services:
+  minio:
+    image: minio/minio
+    environment:
+    - MINIO_KMS_VAULT_APPROLE_ID=
+    - MINIO_KMS_VAULT_APPROLE_SECRET=
+    - MINIO_KMS_VAULT_ENDPOINT=http://127.0.0.1:8200
+    - MINIO_KMS_VAULT_KEY_NAME=my-minio-key
+    - MINIO_KMS_VAULT_AUTH_TYPE=approle
+    network_mode: host

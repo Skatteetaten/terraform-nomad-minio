@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.4.0]
+
+### Added
+- Added sidecar_task #85
+- Modified expose for healthchecks #85
+
 ## [0.3.0]
 
 ### Added

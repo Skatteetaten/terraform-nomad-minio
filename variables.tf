@@ -141,12 +141,17 @@ variable "minio_upstreams" {
 
 variable "resource_proxy" {
   type = object({
-    cpu = number,
-    memory = number
+    cpu     = number,
+    memory  = number
   })
   default = {
-    cpu = 200,
-    memory = 128
+    cpu     = 200,
+    memory  = 128
+  }
+  description = "Minio proxy resources"
+  validation {
+    condition     = var.resource_proxy.cpu >= 200 && var.resource_proxy.memory >= 128
+    error_message = "Proxy resource must be at least: cpu=200, memory=128."
   }
 }
 

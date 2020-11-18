@@ -106,8 +106,10 @@ module "minio" {
   container_environment_variables = ["SOME_VAR_N1=some-value"]
   use_host_volume                 = true
   use_canary                      = true
-  cpu_proxy                       = 200
-  memory_proxy                    = 128
+resource_proxy = {
+  cpu = 200
+  memory = 128
+}
 
   # minio client
   mc_service_name                 = "mc"

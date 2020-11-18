@@ -55,13 +55,13 @@ job "${service_name}" {
               path {
                 path            = "/minio/health/live"
                 protocol        = "http"
-                local_path_port = ${port}//9000
+                local_path_port = ${port}
                 listener_port   = "expose_check1"
               }
               path {
                 path            = "/minio/health/ready"
                 protocol        = "http"
-                local_path_port = ${port}//9000
+                local_path_port = ${port}
                 listener_port   = "expose_check2"
               }
             }
@@ -70,8 +70,8 @@ job "${service_name}" {
         sidecar_task {
           driver = "docker"
           resources {
-            cpu    = "${cpu_proxy}"//250
-            memory = "${memory_proxy}"//128
+            cpu    = "${cpu_proxy}"
+            memory = "${memory_proxy}"
           }
         }
       }

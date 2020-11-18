@@ -142,6 +142,7 @@ module "minio" {
 | vault_secret.vault_kv_access_key | Secret key name in Vault kv path | string | "access_key" |
 | vault_secret.vault_kv_secret_key | Secret key name in Vault kv path | string | "secret_key" |
 | minio\_upstreams | List up connect upstreams | list(object) | [] | no |
+| resource_proxy | Resource allocations for proxy | obj(number, number) | {cpu = 200, memory = 128}| no | 
 | mc\_extra\_commands | Extra commands to run in MC container after creating buckets | list(string) | [] | no |
 
 

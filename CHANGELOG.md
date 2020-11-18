@@ -7,7 +7,6 @@
 - Added sidecar_task #85
 - Modified expose for healthchecks #85
 
-
 ### Changed
 - Removed `failed_when` in `01-create_vault_policy_to_read_secrets.yml` & updated README [no issue]
 

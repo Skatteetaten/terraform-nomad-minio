@@ -21,7 +21,10 @@ job "${service_name}" {
   group "s3" {
     network {
       mode = "bridge"
-      port "expose_check" {
+      port "expose_check1" {
+        to = -1
+      }
+      port "expose_check2" {
         to = -1
       }
     }
@@ -52,46 +55,42 @@ job "${service_name}" {
               path {
                 path            = "/minio/health/live"
                 protocol        = "http"
-                local_path_port = 9000
-                listener_port   = "expose_check"
+                local_path_port = ${port}//9000
+                listener_port   = "expose_check1"
               }
-            /*  path {
+              path {
                 path            = "/minio/health/ready"
                 protocol        = "http"
-                local_path_port = 9000
-                listener_port   = "expose_check"
-              }*/
+                local_path_port = ${port}//9000
+                listener_port   = "expose_check2"
+              }
             }
           }
         }
         sidecar_task {
           driver = "docker"
           resources {
-            cpu    = 250
-            memory = 128
+            cpu    = "${cpu_proxy}"//250
+            memory = "${memory_proxy}"//128
           }
         }
       }
       check {
-        //expose    = true
-        //task      = "server"
         name      = "${service_name}-live"
         type      = "http"
-        port      = "expose_check"//9000 //${port}
+        port      = "expose_check1"
         path      = "/minio/health/live"
         interval  = "10s"
         timeout   = "2s"
       }
-     /* check {
-        //expose    = true
+      check {
         name      = "${service_name}-ready"
         type      = "http"
-        port      = "expose_check"//9000
+        port      = "expose_check2"
         path      = "/minio/health/ready"
         interval  = "15s"
         timeout   = "4s"
-        //address_mode = "driver"
-      }*/
+      }
     }
 
     task "server" {

@@ -139,6 +139,17 @@ variable "minio_upstreams" {
   default     = []
 }
 
+variable "resource_proxy" {
+  type = object({
+    cpu = number,
+    memory = number
+  })
+  default = {
+    cpu = 200,
+    memory = 128
+  }
+}
+
 variable "mc_extra_commands" {
   type        = list(string)
   default     = [""]

@@ -21,6 +21,12 @@ job "${service_name}" {
   group "s3" {
     network {
       mode = "bridge"
+      port "expose_check1" {
+        to = -1
+      }
+      port "expose_check2" {
+        to = -1
+      }
     }
 
   %{ if use_host_volume }
@@ -35,22 +41,7 @@ job "${service_name}" {
       name = "${service_name}"
       port = "${port}"
       # https://docs.min.io/docs/minio-monitoring-guide.html
-      check {
-        expose    = true
-        name      = "${service_name}-live"
-        type      = "http"
-        path      = "/minio/health/live"
-        interval  = "10s"
-        timeout   = "2s"
-      }
-      check {
-        expose    = true
-        name      = "${service_name}-ready"
-        type      = "http"
-        path      = "/minio/health/ready"
-        interval  = "15s"
-        timeout   = "4s"
-      }
+
       connect {
         sidecar_service {
           proxy {
@@ -60,8 +51,45 @@ job "${service_name}" {
               local_bind_port  = "${upstream.port}"
             }
 %{ endfor }
+            expose {
+              path {
+                path            = "/minio/health/live"
+                protocol        = "http"
+                local_path_port = ${port}
+                listener_port   = "expose_check1"
+              }
+              path {
+                path            = "/minio/health/ready"
+                protocol        = "http"
+                local_path_port = ${port}
+                listener_port   = "expose_check2"
+              }
+            }
           }
         }
+        sidecar_task {
+          driver = "docker"
+          resources {
+            cpu    = "${cpu_proxy}"
+            memory = "${memory_proxy}"
+          }
+        }
+      }
+      check {
+        name      = "${service_name}-live"
+        type      = "http"
+        port      = "expose_check1"
+        path      = "/minio/health/live"
+        interval  = "10s"
+        timeout   = "2s"
+      }
+      check {
+        name      = "${service_name}-ready"
+        type      = "http"
+        port      = "expose_check2"
+        path      = "/minio/health/ready"
+        interval  = "15s"
+        timeout   = "4s"
       }
     }
 

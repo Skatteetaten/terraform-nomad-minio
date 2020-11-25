@@ -165,10 +165,10 @@ jobs:
       contains(github.event.pull_request.labels.*.name, 'major') ||
       contains(github.event.pull_request.labels.*.name, 'minor') ||
       contains(github.event.pull_request.labels.*.name, 'patch')
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     outputs:
       bump: ${{ steps.bump.outputs.match }}
-      next_version: ${{ steps.next_version.outputs.version }}
+      next_version: ${{ steps.split_tag.outputs._0 }}
       log_entry: ${{ steps.changelog_reader.outputs.log_entry }}
 
     steps:
@@ -179,12 +179,19 @@ jobs:
         with:
           allowed: major,minor,patch
 
-      - id: next_version
-        uses: zwaldowski/semver-release-action@v1
+      - name: Get tag next version
+        id: next_version
+        uses: anothrNick/github-tag-action@1.26.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BUMP: ${{ steps.bump.outputs.match }}
+          DRY_RUN: true
+
+      - uses: rishabhgupta/split-by@v1
+        id: split_tag
         with:
-          dry_run: true
-          bump: ${{ steps.bump.outputs.match }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          string: ${{ steps.next_version.outputs.new_tag }}
+          split-by: '-'
 
       - name: Find and replace
         run: python .github/action/find-replace.py

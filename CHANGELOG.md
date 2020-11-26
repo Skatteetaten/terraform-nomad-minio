@@ -10,7 +10,7 @@
 ### Changed
 - Removed `failed_when` in `01-create_vault_policy_to_read_secrets.yml` & updated README [no issue]
 - Changed to anothrNick/github-tag-action to get bumped version tags. Old action is deprecated [no issue]
-
+- Updated variables for consistency #59
 
 ## [0.3.0]
 

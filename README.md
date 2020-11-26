@@ -96,11 +96,11 @@ module "minio" {
   port                            = 9000
   container_image                 = "minio/minio:latest"
   vault_secret                    = {
-                                      use_vault_provider     = true,
-                                      vault_kv_policy_name   = "kv-secret",
-                                      vault_kv_path          = "secret/data/minio",
-                                      vault_kv_access_key    = "access_key",        #default minio
-                                      vault_kv_secret_key    = "secret_key"         #default minio123
+                                      use_vault_provider        = true,
+                                      vault_kv_policy_name      = "kv-secret",
+                                      vault_kv_path             = "secret/data/minio",
+                                      vault_kv_field_access_key = "access_key",        #default minio
+                                      vault_kv_field_secret_key = "secret_key"         #default minio123
                                     }
   data_dir                        = "/minio/data"
   container_environment_variables = ["SOME_VAR_N1=some-value"]
@@ -139,8 +139,8 @@ module "minio" {
 | vault_secret.use_vault_provider | Set if want to access secrets from Vault | bool | true |
 | vault_secret.vault_kv_policy_name | Vault policy name to read secrets | string | "kv-secret" |
 | vault_secret.vault_kv_path | Path to the secret key in Vault | string | "secret/data/minio" |
-| vault_secret.vault_kv_access_key | Secret key name in Vault kv path | string | "access_key" |
-| vault_secret.vault_kv_secret_key | Secret key name in Vault kv path | string | "secret_key" |
+| vault_secret.vault_kv_field_access_key | Secret key name in Vault kv path | string | "access_key" |
+| vault_secret.vault_kv_field_secret_key | Secret key name in Vault kv path | string | "secret_key" |
 | minio\_upstreams | List up connect upstreams | list(object) | [] | no |
 | mc\_extra\_commands | Extra commands to run in MC container after creating buckets | list(string) | [] | no |
 
@@ -173,10 +173,10 @@ Below is an example on how to disable the use of vault credentials, and setting 
 module "minio" {
 ...
   vault_secret = {
-                    use_vault_provider     = false,
-                    vault_kv_path          = "",
-                    vault_kv_access_key    = "",
-                    vault_kv_secret_key    = ""
+                    use_vault_provider        = false,
+                    vault_kv_path             = "",
+                    vault_kv_field_access_key = "",
+                    vault_kv_field_secret_key = ""
                  }
   access_key     = "some-user-provided-access-key"       # default 'minio'
   secret_key     = "some-user-provided-secret-key"       # default 'minio123'
@@ -192,11 +192,11 @@ If you want to use the automatically generated credentials in the box, you can d
 module "minio" {
 ...
   vault_secret  = {
-                    use_vault_provider     = true,
-                    vault_kv_policy_name   = "kv-secret"
-                    vault_kv_path          = "secret/minio",
-                    vault_kv_access_key    = "access_key",
-                    vault_kv_secret_key    = "secret_key"
+                    use_vault_provider        = true,
+                    vault_kv_policy_name      = "kv-secret"
+                    vault_kv_path             = "secret/minio",
+                    vault_kv_field_access_key = "access_key",
+                    vault_kv_field_secret_key = "secret_key"
                   }
 }
 ```
@@ -207,11 +207,11 @@ Say that you have put your secrets in `secret/services/minio/users` and change t
 module "minio" {
 ...
   vault_secret  = {
-                    use_vault_provider     = true,
-                    vault_kv_policy_name   = "kv-users-secret"
-                    vault_kv_path          = "secret/services/minio/users",
-                    vault_kv_access_key    = "alt_access_key",
-                    vault_kv_secret_key    = "alt_secret_key"
+                    use_vault_provider        = true,
+                    vault_kv_policy_name      = "kv-users-secret"
+                    vault_kv_path             = "secret/services/minio/users",
+                    vault_kv_field_access_key = "alt_access_key",
+                    vault_kv_field_secret_key = "alt_secret_key"
                   }
 }
 ```

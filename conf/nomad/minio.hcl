@@ -127,8 +127,8 @@ job "${service_name}" {
         data        = <<EOF
 %{ if use_vault_provider }
 {{ with secret "${vault_kv_path}" }}
-MINIO_ACCESS_KEY="{{ .Data.data.${vault_kv_access_key} }}"
-MINIO_SECRET_KEY="{{ .Data.data.${vault_kv_secret_key} }}"
+MINIO_ACCESS_KEY="{{ .Data.data.${vault_kv_field_access_key} }}"
+MINIO_SECRET_KEY="{{ .Data.data.${vault_kv_field_secret_key} }}"
 {{ end }}
 %{ else }
 MINIO_ACCESS_KEY="${access_key}"

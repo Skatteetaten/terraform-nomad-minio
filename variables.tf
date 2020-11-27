@@ -89,19 +89,19 @@ variable "use_canary" {
 
 variable "vault_secret" {
   type = object({
-    use_vault_provider     = bool,
-    vault_kv_policy_name   = string,
-    vault_kv_path          = string,
-    vault_kv_access_key    = string,
-    vault_kv_secret_key    = string
+    use_vault_provider        = bool,
+    vault_kv_policy_name      = string,
+    vault_kv_path             = string,
+    vault_kv_field_access_key = string,
+    vault_kv_field_secret_key = string
   })
   description = "Set of properties to be able to fetch secret from vault"
   default = {
-    use_vault_provider     = true
-    vault_kv_policy_name   = "kv-secret"
-    vault_kv_path          = "secret/data/minio"
-    vault_kv_access_key    = "access_key"
-    vault_kv_secret_key    = "secret_key"
+    use_vault_provider        = true
+    vault_kv_policy_name      = "kv-secret"
+    vault_kv_path             = "secret/data/minio"
+    vault_kv_field_access_key = "access_key"
+    vault_kv_field_secret_key = "secret_key"
   }
 }
 

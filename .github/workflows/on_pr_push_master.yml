@@ -62,7 +62,11 @@ jobs:
 
   test:
     needs: pre_job
-    if: ${{ needs.pre_job.outputs.should_skip != 'true' }}
+    if: |
+      ${{ needs.pre_job.outputs.should_skip != 'true' }} ||
+      contains(github.event.pull_request.labels.*.name, 'major') ||
+      contains(github.event.pull_request.labels.*.name, 'minor') ||
+      contains(github.event.pull_request.labels.*.name, 'patch')
     runs-on: macos-latest
     strategy:
       matrix:

@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.4.0 UNRELEASED]
+## [0.4.0]
 
 ### Added
 - Added skip-duplicate-runs #78

@@ -35,7 +35,7 @@ job "${service_name}" {
     %{ endif }
 
       config {
-        image = "minio/mc:latest"
+        image = "${image}"
         entrypoint = [
           "/bin/sh",
           "-c",

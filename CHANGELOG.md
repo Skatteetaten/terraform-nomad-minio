@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.4.1]
+
+### Changed
+- Now uses the mc_container_image instead of hardcoded image [#100](https://github.com/fredrikhgrelland/terraform-nomad-minio/issues/100)
+
 ## [0.4.0]
 
 ### Added

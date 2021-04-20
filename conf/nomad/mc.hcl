@@ -35,7 +35,7 @@ job "${service_name}" {
     %{ endif }
 
       config {
-        mc_container_image = "${mc_container_image}"
+        image = "${mc_container_image}"
         entrypoint = [
           "/bin/sh",
           "-c",

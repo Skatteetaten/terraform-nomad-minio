@@ -22,7 +22,6 @@
 11. [Licence](#license)
 
 
-
 # Terraform-nomad-minio
 Terraform-nomad-minio module is IaC - infrastructure as code. Module contains a nomad job with [Minio](https://min.io).
 - [consul-connect](https://www.consul.io/docs/connect) integration.

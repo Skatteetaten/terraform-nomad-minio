@@ -40,10 +40,11 @@ job "${service_name}" {
     service {
       name = "${service_name}"
       tags = [
-      %{for tag in consul_tags }
-      "${tag}",
-      %{endfor}
+  %{for tag in consul_tags }
+        "${tag}",
+  %{endfor}
       ]
+
       port = "${port}"
       # https://docs.min.io/docs/minio-monitoring-guide.html
       connect {

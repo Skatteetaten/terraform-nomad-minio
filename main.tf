@@ -61,7 +61,7 @@ data "template_file" "nomad_job_mc" {
     minio_service_name        = var.service_name
     datacenters               = local.datacenters
     namespace                 = var.nomad_namespace
-    image                     = var.mc_container_image
+    mc_container_image        = var.mc_container_image
     access_key                = var.access_key
     secret_key                = var.secret_key
     use_vault_provider        = var.vault_secret.use_vault_provider

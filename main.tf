@@ -33,7 +33,6 @@ data "template_file" "nomad_job_minio" {
     host_volume               = var.nomad_host_volume
     image                     = var.container_image
     service_name              = var.service_name
-    consul_tags               = var.consul_tags
     host                      = var.host
     port                      = var.port
     cpu                       = var.cpu
@@ -76,8 +75,9 @@ data "template_file" "nomad_job_mc" {
 }
 
 resource "nomad_job" "nomad_job_minio" {
-  jobspec = data.template_file.nomad_job_minio.rendered
-  detach  = false
+  jobspec                     = data.template_file.nomad_job_minio.rendered
+  detach                      = false
+  consul_tags                 = var.consul_tags
 }
 
 resource "nomad_job" "nomad_job_mc" {

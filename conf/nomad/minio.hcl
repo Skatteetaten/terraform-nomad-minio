@@ -41,7 +41,11 @@ job "${service_name}" {
       name = "${service_name}"
       port = "${port}"
       # https://docs.min.io/docs/minio-monitoring-guide.html
-
+      tags = [
+      %{for tag in consul_tags }
+      "${tag}",
+      %{endfor}
+      ]
       connect {
         sidecar_service {
           proxy {

@@ -121,6 +121,7 @@ module "minio" {
 | nomad\_namespace | [Enterprise] Nomad namespace | string | "default" | yes |
 | nomad\_host\_volume | Nomad host volume | string | "persistence" | no |
 | service\_name | Minio service name | string | "minio" | yes |
+| consul\_tags | Consul tags | list(string) | "" | no |
 | host | Minio host | string | "127.0.0.1" | yes |
 | port | Minio port | number | 9000 | yes |
 | memory | Memory allocation for Minio | number | 1024 | no |

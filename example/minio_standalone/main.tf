@@ -6,6 +6,9 @@ module "minio" {
   nomad_namespace                 = "default"
   nomad_host_volume               = "persistence"
 
+  # consul
+  consul_tags = ["vagrant", "local"]
+
   # minio
   service_name                    = "minio"
   host                            = "127.0.0.1"

@@ -15,6 +15,13 @@ variable "nomad_host_volume" {
   default     = "persistence"
 }
 
+variable "consul_tags" {
+  type        = list(string)
+  description = "List of tags for services announces in consul service catalog"
+  default     = [""]
+}
+
+
 # Minio
 variable "service_name" {
   type        = string

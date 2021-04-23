@@ -2,6 +2,9 @@
 
 ## [0.4.1]
 
+### Added
+- Added certificates for minerva root #111
+
 ### Changed
 - Now uses the mc_container_image instead of hardcoded image [#100](https://github.com/fredrikhgrelland/terraform-nomad-minio/issues/100)
 - Image is configurable #107

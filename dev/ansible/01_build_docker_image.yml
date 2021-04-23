@@ -1,0 +1,18 @@
+- name: Remove docker image
+  docker_image:
+    name: minio
+    tag: local
+    force_absent: true
+    state: absent
+
+- name: Build docker image
+  docker_image:
+    name: minio
+    tag: local
+    build:
+      path: /vagrant/docker
+      pull: false
+      http_timeout: 120
+      args:
+        TEST_DOWNLOAD_BUILD_ARGUMENT: https://nrk.no
+    source: build

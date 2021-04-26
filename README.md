@@ -53,6 +53,7 @@ make up
 Minio example instance has:
 - [buckets ["one", "two"]](example/minio_standalone/main.tf)
 - [different type of files uploaded to bucket `one/`](./dev/ansible/04_upload_files.yml)
+- Transparent encryption using Vault transit engine as KMS
 
 ### Verifying setup
 You can verify that Minio ran successful by checking the Minio UI.
@@ -106,6 +107,7 @@ module "minio" {
   container_environment_variables = ["SOME_VAR_N1=some-value"]
   use_host_volume                 = true
   use_canary                      = true
+  use_vault_kms                   = false
 
   # minio client
   mc_service_name                 = "mc"
@@ -144,7 +146,10 @@ module "minio" {
 | vault_secret.vault_kv_field_secret_key | Secret key name in Vault kv path | string | "secret_key" |
 | minio\_upstreams | List up connect upstreams | list(object) | [] | no |
 | mc\_extra\_commands | Extra commands to run in MC container after creating buckets | list(string) | [] | no |
-
+| use_vault_kms | Use vault transit encryption engine as KMS for transparent encryption (auto-encrypt)| bool | false | no |
+| vault_address | Address to vault service. Only relevant when Vault KMS is used. | string | "" | no |
+| vault_kms_approle_kv | Path to key in vault where ApproleID and SecretID is stored. Only relevant when Vault KMS is used. | string | "" | no |
+| vault_kms_key_name | Name of key in vault transit engine. Only relevant when Vault KMS is used. | string | "" | no |
 
 ## Outputs
 | Name | Description | Type |

@@ -2,6 +2,12 @@
 
 ## [0.4.1]
 
+### Added
+- Added Native Vault KMS support using Vault transit encryption #113
+  - In this version we are using the deprecated native vault integration.
+  - EOL for this feature is October 2021
+  - Switch to [MinIO KES](https://github.com/minio/kes/wiki/Hashicorp-Vault-Keystore) before then
+
 ### Changed
 - Now uses the mc_container_image instead of hardcoded image [#100](https://github.com/fredrikhgrelland/terraform-nomad-minio/issues/100)
 - Image is configurable #107

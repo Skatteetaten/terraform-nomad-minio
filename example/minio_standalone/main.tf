@@ -29,8 +29,30 @@ module "minio" {
                                       cpu    = 200
                                       memory = 128
                                     }
+
+  # Vault transit encryption as KMS
+  use_vault_kms                   = true
+  vault_address                   = "http://10.0.2.15:8200"
+  vault_kms_approle_kv            = vault_generic_secret.kms_approle.path
+  vault_kms_key_name              = "minio"
+
   # minio client
   mc_service_name                 = "mc"
   mc_container_image              = "minio/mc:latest"
   buckets                         = ["one", "two"]
+}
+
+
+resource "vault_generic_secret" "kms_approle" {
+  data_json = <<EOT
+{
+"approle_id": "${vault_approle_auth_backend_role.minio_kms.role_id}" ,
+"secret_id": "${vault_approle_auth_backend_role_secret_id.minio_kms.secret_id}"
+}
+EOT
+  path = "secret/kms"
+}
+resource "vault_generic_secret" "kms_transit_key" {
+  data_json = "{}"
+  path = "transit/keys/minio"
 }

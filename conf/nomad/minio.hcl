@@ -137,6 +137,24 @@ MINIO_SECRET_KEY="${secret_key}"
 ${ envs }
 EOF
       }
+%{ if use_vault_kms }
+template {
+data = <<EOH
+          {{ with secret "${vault_kms_approle_kv}" }}
+          MINIO_KMS_VAULT_APPROLE_ID="{{ .Data.data.approle_id }}"
+          MINIO_KMS_VAULT_APPROLE_SECRET="{{ .Data.data.secret_id }}"
+          {{end}}
+          MINIO_KMS_VAULT_ENDPOINT=${vault_address}
+          MINIO_KMS_VAULT_KEY_NAME=${vault_kms_key_name}
+          MINIO_KMS_VAULT_AUTH_TYPE=approle
+          MINIO_KMS_AUTO_ENCRYPTION=on
+          MINIO_KMS_VAULT_DEPRECATION=off
+          EOH
+
+        destination = "secrets/kms"
+        env         = true
+    }
+%{endif}
       resources {
         cpu     = ${cpu}
         memory  = ${memory}

@@ -42,16 +42,16 @@ module "minio" {
   buckets                         = ["one", "two"]
 }
 
-
 resource "vault_generic_secret" "kms_approle" {
   data_json = <<EOT
-{
-"approle_id": "${vault_approle_auth_backend_role.minio_kms.role_id}" ,
-"secret_id": "${vault_approle_auth_backend_role_secret_id.minio_kms.secret_id}"
-}
-EOT
+    {
+      "approle_id": "${vault_approle_auth_backend_role.minio_kms.role_id}" ,
+      "secret_id": "${vault_approle_auth_backend_role_secret_id.minio_kms.secret_id}"
+    }
+  EOT
   path = "secret/kms"
 }
+
 resource "vault_generic_secret" "kms_transit_key" {
   data_json = "{}"
   path = "transit/keys/minio"

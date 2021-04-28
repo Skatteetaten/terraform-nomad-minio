@@ -13,7 +13,7 @@ module "minio" {
   service_name                    = "minio"
   host                            = "127.0.0.1"
   port                            = 9000
-  container_image                 = "minio:local"
+  container_image                 = "minio/minio:latest"
   vault_secret                    = {
                                       use_vault_provider        = true,
                                       vault_kv_policy_name      = "kv-secret",

@@ -1,6 +1,6 @@
 Vagrant.configure("2") do |config|
     config.vm.box = "fredrikhgrelland/hashistack"
-    config.vm.box_version = ">= 0.7, < 0.8"
+    config.vm.box_version = ">= 0.10, < 0.11"
     config.vm.boot_timeout = 600
     config.vm.provider "virtualbox" do |vb|
         vb.linked_clone = true

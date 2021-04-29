@@ -221,7 +221,16 @@ module "minio" {
                   }
 }
 ```
-
+### Key Management Secrets (KMS)
+The Key Management secrets engine provides a consistent workflow for distribution and lifecycle management of cryptographic keys in various key management service (KMS) providers.
+ ```hcl
+ variable "use_vault_kms" {
+   type = bool
+   default = false
+   description = "Use vault transit encryption engine as KMS for transparent encryption (auto-encrypt)"
+}
+ ```
+This is false by default, but can be turned on if you want to use vaults integrated transit encryption to manage your keys. The keys will then be store in ``secrets/kms`` folder inside of vault. You can change the path where the keys are stored by changing this variable ``vault_kms_approle_kv`` but that is only relevant if you `use_vault_kms = true`.
 ## Volumes
 We are using [host volume](https://www.nomadproject.io/docs/job-specification/volume) to store Minio data.
 Minio data will now be available in the `persistence/minio` folder.

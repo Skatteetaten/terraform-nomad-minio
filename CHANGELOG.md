@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.4.2 UNRELEASED]
+
+### Added
+
+- Added support for root secret key rollover when using Vault for secret keeping #115
+
+### Changed
+
 ## [0.4.1]
 
 ### Changed

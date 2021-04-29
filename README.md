@@ -228,17 +228,17 @@ Make note of the current version of the secrets in Vault, you need this to tell 
 Update Vault with the new credentials you wish to use for MinIO. The `MINIO_ACCESS_KEY` and `MINIO_SECRET_KEY` values are set by getting the latest version of the secrets in Vault,
 so you don't need the version for these values.
 
-To trigger rotation of the credentials, you have to set the variable `vault_secret_old_key` in the module to the Vault secret version you took a note of earlier.
+To trigger rotation of the credentials, you have to set the variable `vault_secret_old_version` in the module to the Vault secret version you took a note of earlier.
 
 ```hcl
 module "minio" {
    ...
-   vault_secret_old_key = 1
+   vault_secret_old_version = 1
 }
 ```
 
 Run `terraform apply` to rotate the credentials. After the MinIO server have successfully restarted, you should unset the `MINIO_ACCESS_KEY_OLD` and `MINIO_SECRET_KEY_OLD` variables.
-Remove the `vault_secret_old_key` variable from the module, and re-run `terraform apply` to unset `MINIO_ACCESS_KEY_OLD` and `MINIO_SECRET_KEY_OLD`
+Remove the `vault_secret_old_version` variable from the module, and re-run `terraform apply` to unset `MINIO_ACCESS_KEY_OLD` and `MINIO_SECRET_KEY_OLD`
 
 ## Volumes
 We are using [host volume](https://www.nomadproject.io/docs/job-specification/volume) to store Minio data.

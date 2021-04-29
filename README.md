@@ -219,16 +219,16 @@ module "minio" {
 
 ### Rotate credentials when using Vault for secret keeping
 
-If you use Vault for secret keeping, the module supports rotation of the MinIO credentials after it have been deployed. 
+If you use Vault for secret keeping, the module supports rotation of the MinIO credentials after it have been deployed.
 
 The MinIO credentials are set with the variables `MINIO_ACCESS_KEY` and `MINIO_SECRET_KEY` in [minio.hcl](conf/nomad/minio.hcl). To rotate the credentials after
 the module have been deployed, the additional variables `MINIO_ACCESS_KEY_OLD` and `MINIO_SECRET_KEY_OLD` must be set before restarting MinIO.
 
-Make note of the current version of the secrets in Vault, you need this to tell the module where to find the values for `MINIO_ACCESS_KEY_OLD` and `MINIO_SECRET_KEY_OLD`. 
+Make note of the current version of the secrets in Vault, you need this to tell the module where to find the values for `MINIO_ACCESS_KEY_OLD` and `MINIO_SECRET_KEY_OLD`.
 Update Vault with the new credentials you wish to use for MinIO. The `MINIO_ACCESS_KEY` and `MINIO_SECRET_KEY` values are set by getting the latest version of the secrets in Vault,
-so you don't need the version for these values. 
+so you don't need the version for these values.
 
-To trigger rotation of the credentials, you have to set the variable `vault_secret_old_key` in the module to the Vault secret version you took a note of earlier. 
+To trigger rotation of the credentials, you have to set the variable `vault_secret_old_key` in the module to the Vault secret version you took a note of earlier.
 
 ```hcl
 module "minio" {
@@ -237,7 +237,7 @@ module "minio" {
 }
 ```
 
-Run `terraform apply` to rotate the credentials. After the MinIO server have successfully restarted, you should unset the `MINIO_ACCESS_KEY_OLD` and `MINIO_SECRET_KEY_OLD` variables. 
+Run `terraform apply` to rotate the credentials. After the MinIO server have successfully restarted, you should unset the `MINIO_ACCESS_KEY_OLD` and `MINIO_SECRET_KEY_OLD` variables.
 Remove the `vault_secret_old_key` variable from the module, and re-run `terraform apply` to unset `MINIO_ACCESS_KEY_OLD` and `MINIO_SECRET_KEY_OLD`
 
 ## Volumes

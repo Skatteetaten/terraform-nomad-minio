@@ -56,7 +56,7 @@ variable "memory" {
 variable "container_image" {
   type        = string
   description = "Minio docker image"
-  default     = "minio/minio:latest"
+  default     = "gitlab-container-registry.minerva.loc/plattform/foundation/dockerimages/minio-custom-image"
 }
 
 variable "access_key" {

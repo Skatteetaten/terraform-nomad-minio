@@ -1,4 +1,4 @@
-ARG SOURCEIMAGE=minio/minio
+ARG SOURCEIMAGE=gitlab-container-registry.minerva.loc/plattform/foundation/dockerimages/minio-custom-image
 ARG SOURCETAG=latest
 FROM $SOURCEIMAGE:$SOURCETAG
 

@@ -125,22 +125,23 @@ job "${service_name}" {
         change_mode = "noop"
         env         = true
         data        = <<EOF
-%{ if use_vault_provider }
-{{ with secret "${vault_kv_path}" }}
-MINIO_ACCESS_KEY="{{ .Data.data.${vault_kv_field_access_key} }}"
-MINIO_SECRET_KEY="{{ .Data.data.${vault_kv_field_secret_key} }}"
-{{ end }}
-%{ else }
-MINIO_ACCESS_KEY="${access_key}"
-MINIO_SECRET_KEY="${secret_key}"
-%{ endif }
+
+  %{ if use_vault_provider }
+    {{ with secret "${vault_kv_path}" }}
+      MINIO_ACCESS_KEY="{{ .Data.data.${vault_kv_field_access_key} }}"
+      MINIO_SECRET_KEY="{{ .Data.data.${vault_kv_field_secret_key} }}"
+    {{ end }}
+  %{ else }
+    MINIO_ACCESS_KEY="${access_key}"
+    MINIO_SECRET_KEY="${secret_key}"
+  %{ endif }
 ${ envs }
 EOF
       }
-%{ if use_vault_kms }
-template {
-data = <<EOH
-          {{ with secret "${vault_kms_approle_kv}" }}
+  %{ if use_vault_kms }
+    template {
+      data = <<EOH
+        {{ with secret "${vault_kms_approle_kv}" }}
           MINIO_KMS_VAULT_APPROLE_ID="{{ .Data.data.approle_id }}"
           MINIO_KMS_VAULT_APPROLE_SECRET="{{ .Data.data.secret_id }}"
           {{end}}
@@ -149,7 +150,7 @@ data = <<EOH
           MINIO_KMS_VAULT_AUTH_TYPE=approle
           MINIO_KMS_AUTO_ENCRYPTION=on
           MINIO_KMS_VAULT_DEPRECATION=off
-          EOH
+        EOH
 
         destination = "secrets/kms"
         env         = true

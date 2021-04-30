@@ -222,7 +222,7 @@ module "minio" {
 }
 ```
 ### Key Management Secrets (KMS)
-The Key Management secrets engine provides a consistent workflow for distribution and lifecycle management of 
+The Key Management secrets engine provides a consistent workflow for distribution and lifecycle management of
 cryptographic keys in various key management service (KMS) providers.
  ```hcl
 resource "vault_generic_secret" "kms_transit_key" {

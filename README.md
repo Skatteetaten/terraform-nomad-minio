@@ -146,10 +146,10 @@ module "minio" {
 | vault_secret.vault_kv_field_secret_key | Secret key name in Vault kv path | string | "secret_key" |
 | minio\_upstreams | List up connect upstreams | list(object) | [] | no |
 | mc\_extra\_commands | Extra commands to run in MC container after creating buckets | list(string) | [] | no |
-| use_vault_kms | Use vault transit encryption engine as KMS for transparent encryption (auto-encrypt)| bool | false | no |
-| vault_address | Address to vault service. Only relevant when Vault KMS is used. | string | "" | no |
-| vault_kms_approle_kv | Path to key in vault where ApproleID and SecretID is stored. Only relevant when Vault KMS is used. | string | "" | no |
-| vault_kms_key_name | Name of key in vault transit engine. Only relevant when Vault KMS is used. | string | "" | no |
+| kms_variables.use_vault_kms | Use vault transit encryption engine as KMS for transparent encryption (auto-encrypt)| bool | false | no |
+| kms_variables.vault_address | Address to vault service. Only relevant when Vault KMS is used. | string | "" | no |
+| kms_variables.vault_kms_approle_kv | Path to key in vault where ApproleID and SecretID is stored. Only relevant when Vault KMS is used. | string | "" | no |
+| kms_variables.vault_kms_key_name | Name of key in vault transit engine. Only relevant when Vault KMS is used. | string | "" | no |
 
 ## Outputs
 | Name | Description | Type |
@@ -235,15 +235,31 @@ resource "vault_generic_secret" "kms_transit_key" {
 These are stored here:
 
 ```hcl
+resource "vault_generic_secret" "kms_transit_key" {
+   data_json = "{}"
+   path = "transit/keys/minio"
+}
+
 resource "vault_generic_secret" "kms_approle" {
-  data_json = <<EOT
+   data_json = <<EOT
     {
       "approle_id": "${vault_approle_auth_backend_role.minio_kms.role_id}" ,
       "secret_id": "${vault_approle_auth_backend_role_secret_id.minio_kms.secret_id}"
     }
   EOT
-  path = "secret/kms"
+   path = "secret/kms"
 }
+
+module minio {
+   # ... other configuration
+   
+  kms_variables                   = {
+                                     use_vault_kms = true,
+                                     vault_address = "http://10.0.2.15:8200",
+                                     vault_kms_approle_kv = vault_generic_secret.kms_approle.path,
+                                     vault_kms_key_name = "minio"
+                                    }
+   }
 ```
 
 ``use_vault_kms``

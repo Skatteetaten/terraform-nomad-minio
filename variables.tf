@@ -169,25 +169,18 @@ variable "mc_extra_commands" {
 }
 
 # KMS related
-variable "use_vault_kms" {
-  type = bool
-  default = false
-  description = "Use vault transit encryption engine as KMS for transparent encryption (auto-encrypt)"
-}
-
-variable "vault_address" {
-  type = string
-  default = "vault.service.consul:8200"
-  description = "Address to vault service. Only relevant when Vault KMS is used."
-}
-variable "vault_kms_approle_kv" {
-  type = string
-  default = ""
-  description = "Path to key in vault where ApproleID and SecretID is stored. Only relevant when Vault KMS is used."
-}
-
-variable "vault_kms_key_name" {
-  type = string
-  default = ""
-  description = "Name of key in vault transit engine. Only relevant when Vault KMS is used."
+variable "kms_variables" {
+  type = object({
+    use_vault_kms             = string
+    vault_address             = string,
+    vault_kms_approle_kv      = string,
+    vault_kms_key_name        = string
+  })
+  description = "Set of properties to be able to transit secrets in vault"
+  default = {
+    use_vault_kms             = false
+    vault_address             = "",
+    vault_kms_approle_kv      = "",
+    vault_kms_key_name        = ""
+  }
 }

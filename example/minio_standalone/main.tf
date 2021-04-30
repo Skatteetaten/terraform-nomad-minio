@@ -31,10 +31,12 @@ module "minio" {
                                     }
 
   # Vault transit encryption as KMS
-  use_vault_kms                   = true
-  vault_address                   = "http://10.0.2.15:8200"
-  vault_kms_approle_kv            = vault_generic_secret.kms_approle.path
-  vault_kms_key_name              = "minio"
+  kms_variables                   = {
+                                      use_vault_kms = true,
+                                      vault_address = "http://10.0.2.15:8200",
+                                      vault_kms_approle_kv = vault_generic_secret.kms_approle.path,
+                                      vault_kms_key_name = "minio"
+                                    }
 
   # minio client
   mc_service_name                 = "mc"

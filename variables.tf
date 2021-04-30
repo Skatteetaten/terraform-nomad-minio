@@ -112,6 +112,12 @@ variable "vault_secret" {
   }
 }
 
+variable "vault_secret_old_version" {
+  type = number
+  default = -1
+  description = "Version of secret KV which has old value of root secrets. Used to rollover root secret"
+}
+
 # MC
 variable "mc_service_name" {
   type        = string

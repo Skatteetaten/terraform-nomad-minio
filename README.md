@@ -222,15 +222,35 @@ module "minio" {
 }
 ```
 ### Key Management Secrets (KMS)
-The Key Management secrets engine provides a consistent workflow for distribution and lifecycle management of cryptographic keys in various key management service (KMS) providers.
+The Key Management secrets engine provides a consistent workflow for distribution and lifecycle management of 
+cryptographic keys in various key management service (KMS) providers.
  ```hcl
- variable "use_vault_kms" {
-   type = bool
-   default = false
-   description = "Use vault transit encryption engine as KMS for transparent encryption (auto-encrypt)"
+resource "vault_generic_secret" "kms_transit_key" {
+   data_json = "{}"
+   path = "transit/keys/minio"
 }
  ```
-This is false by default, but can be turned on if you want to use vaults integrated transit encryption to manage your keys. The keys will then be store in ``secrets/kms`` folder inside of vault. You can change the path where the keys are stored by changing this variable ``vault_kms_approle_kv`` but that is only relevant if you `use_vault_kms = true`.
+``kms_transit_key`` This is where the keys gets sent for encryption and only valid role and secret key can decrypt it.
+
+These are stored here:
+
+```hcl
+resource "vault_generic_secret" "kms_approle" {
+  data_json = <<EOT
+    {
+      "approle_id": "${vault_approle_auth_backend_role.minio_kms.role_id}" ,
+      "secret_id": "${vault_approle_auth_backend_role_secret_id.minio_kms.secret_id}"
+    }
+  EOT
+  path = "secret/kms"
+}
+```
+
+``use_vault_kms``
+This is false by default, but can be turned on if you want to use vaults integrated transit encryption to manage your keys. 
+The keys will then be store in ``secrets/kms`` folder inside of vault. You can change the path where the keys 
+are stored by changing this variable ``vault_kms_approle_kv`` but that is only relevant if you `use_vault_kms = true`.
+
 ## Volumes
 We are using [host volume](https://www.nomadproject.io/docs/job-specification/volume) to store Minio data.
 Minio data will now be available in the `persistence/minio` folder.

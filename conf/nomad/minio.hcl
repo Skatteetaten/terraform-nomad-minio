@@ -130,6 +130,12 @@ job "${service_name}" {
 MINIO_ACCESS_KEY="{{ .Data.data.${vault_kv_field_access_key} }}"
 MINIO_SECRET_KEY="{{ .Data.data.${vault_kv_field_secret_key} }}"
 {{ end }}
+%{ if vault_secret_old_version > -1 }
+{{ with secret "${vault_kv_path}?version=${vault_secret_old_version}" }}
+MINIO_ACCESS_KEY_OLD="{{ .Data.data.${vault_kv_field_access_key} }}"
+MINIO_SECRET_KEY_OLD="{{ .Data.data.${vault_kv_field_secret_key} }}"
+{{ end }}
+%{ endif }
 %{ else }
 MINIO_ACCESS_KEY="${access_key}"
 MINIO_SECRET_KEY="${secret_key}"

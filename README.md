@@ -247,8 +247,8 @@ resource "vault_generic_secret" "kms_approle" {
 ```
 
 ``use_vault_kms``
-This is false by default, but can be turned on if you want to use vaults integrated transit encryption to manage your keys. 
-The keys will then be store in ``secrets/kms`` folder inside of vault. You can change the path where the keys 
+This is false by default, but can be turned on if you want to use vaults integrated transit encryption to manage your keys.
+The keys will then be store in ``secrets/kms`` folder inside of vault. You can change the path where the keys
 are stored by changing this variable ``vault_kms_approle_kv`` but that is only relevant if you `use_vault_kms = true`.
 
 ## Volumes

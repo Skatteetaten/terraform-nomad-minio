@@ -1,20 +1,15 @@
 # Changelog
 
-## [0.4.2 UNRELEASED]
-
-### Added
-
-- Added support for root secret key rollover when using Vault for secret keeping #115
-
-### Changed
-
-## [0.4.1]
+## [0.4.2]
 
 ### Added
 - Added Native Vault KMS support using Vault transit encryption #113
   - In this version we are using the deprecated native vault integration.
   - EOL for this feature is October 2021
   - Switch to [MinIO KES](https://github.com/minio/kes/wiki/Hashicorp-Vault-Keystore) before then
+- Added support for root secret key rollover when using Vault for secret keeping #115
+
+## [0.4.1]
 
 ### Changed
 - Now uses the mc_container_image instead of hardcoded image [#100](https://github.com/fredrikhgrelland/terraform-nomad-minio/issues/100)

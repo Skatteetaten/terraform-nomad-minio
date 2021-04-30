@@ -17,6 +17,7 @@
 8. [Secrets & Credentials](#secrets--credentials)
     1. [Set credentials manually](#set-credentials-manually)
     2. [Set credentials using Vault secrets](#set-credentials-using-vault-secrets)
+    3. [Key Management Secrets (KMS)](#key-management-secrets-kms)
 9. [Volumes](#volumes)
 10. [Contributors](#contributors)
 11. [Licence](#license)
@@ -53,6 +54,7 @@ make up
 Minio example instance has:
 - [buckets ["one", "two"]](example/minio_standalone/main.tf)
 - [different type of files uploaded to bucket `one/`](./dev/ansible/04_upload_files.yml)
+- Transparent encryption using Vault transit engine as KMS
 
 ### Verifying setup
 You can verify that Minio ran successful by checking the Minio UI.
@@ -106,6 +108,7 @@ module "minio" {
   container_environment_variables = ["SOME_VAR_N1=some-value"]
   use_host_volume                 = true
   use_canary                      = true
+  use_vault_kms                   = false
 
   # minio client
   mc_service_name                 = "mc"
@@ -145,6 +148,10 @@ module "minio" {
 | vault\_secret\_old\_version | Version of secret KV which has old value of root secrets. Used to rollover root secret | number | -1 | no |
 | minio\_upstreams | List up connect upstreams | list(object) | [] | no |
 | mc\_extra\_commands | Extra commands to run in MC container after creating buckets | list(string) | [] | no |
+| kms_variables.use_vault_kms | Use vault transit encryption engine as KMS for transparent encryption (auto-encrypt)| bool | false | no |
+| kms_variables.vault_address | Address to vault service. Only relevant when Vault KMS is used. | string | "" | no |
+| kms_variables.vault_kms_approle_kv | Path to key in vault where ApproleID and SecretID is stored. Only relevant when Vault KMS is used. | string | "" | no |
+| kms_variables.vault_kms_key_name | Name of key in vault transit engine. Only relevant when Vault KMS is used. | string | "" | no |
 
 ## Outputs
 | Name | Description | Type |
@@ -216,6 +223,51 @@ module "minio" {
                   }
 }
 ```
+### Key Management Secrets (KMS)
+The Key Management secrets engine provides a consistent workflow for distribution and lifecycle management of
+cryptographic keys in various key management service (KMS) providers.
+ ```hcl
+resource "vault_generic_secret" "kms_transit_key" {
+   data_json = "{}"
+   path = "transit/keys/minio"
+}
+ ```
+``kms_transit_key`` This is where the keys gets sent for encryption and only valid role and secret key can decrypt it.
+
+These are stored here:
+
+```hcl
+resource "vault_generic_secret" "kms_transit_key" {
+   data_json = "{}"
+   path = "transit/keys/minio"
+}
+
+resource "vault_generic_secret" "kms_approle" {
+   data_json = <<EOT
+    {
+      "approle_id": "${vault_approle_auth_backend_role.minio_kms.role_id}" ,
+      "secret_id": "${vault_approle_auth_backend_role_secret_id.minio_kms.secret_id}"
+    }
+  EOT
+   path = "secret/kms"
+}
+
+module minio {
+   # ... other configuration
+
+   kms_variables                   = {
+                                     use_vault_kms = true,
+                                     vault_address = "http://10.0.2.15:8200",
+                                     vault_kms_approle_kv = vault_generic_secret.kms_approle.path,
+                                     vault_kms_key_name = "minio"
+                                    }
+   }
+```
+
+``use_vault_kms``
+This is false by default, but can be turned on if you want to use vaults integrated transit encryption to manage your keys.
+The keys will then be store in ``secrets/kms`` folder inside of vault. You can change the path where the keys
+are stored by changing this variable ``vault_kms_approle_kv`` but that is only relevant if you `use_vault_kms = true`.
 
 ### Rotate credentials when using Vault for secret keeping
 

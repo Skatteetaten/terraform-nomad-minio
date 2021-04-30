@@ -50,6 +50,10 @@ data "template_file" "nomad_job_minio" {
     envs                      = local.minio_env_vars
     use_host_volume           = var.use_host_volume
     use_canary                = var.use_canary
+    use_vault_kms             = var.kms_variables.use_vault_kms
+    vault_address             = var.kms_variables.vault_address
+    vault_kms_approle_kv      = var.kms_variables.vault_kms_approle_kv
+    vault_kms_key_name        = var.kms_variables.vault_kms_key_name
     upstreams                 = jsonencode(var.minio_upstreams)
     cpu_proxy                 = var.resource_proxy.cpu
     memory_proxy              = var.resource_proxy.memory

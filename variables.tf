@@ -173,3 +173,20 @@ variable "mc_extra_commands" {
   default     = [""]
   description = "Extra commands to run in MC container after creating buckets"
 }
+
+# KMS related
+variable "kms_variables" {
+  type = object({
+    use_vault_kms             = string
+    vault_address             = string,
+    vault_kms_approle_kv      = string,
+    vault_kms_key_name        = string
+  })
+  description = "Set of properties to be able to transit secrets in vault"
+  default = {
+    use_vault_kms             = false
+    vault_address             = "",
+    vault_kms_approle_kv      = "",
+    vault_kms_key_name        = ""
+  }
+}

@@ -254,8 +254,8 @@ resource "vault_generic_secret" "kms_approle" {
 
 module minio {
    # ... other configuration
-   
-  kms_variables                   = {
+
+   kms_variables                   = {
                                      use_vault_kms = true,
                                      vault_address = "http://10.0.2.15:8200",
                                      vault_kms_approle_kv = vault_generic_secret.kms_approle.path,

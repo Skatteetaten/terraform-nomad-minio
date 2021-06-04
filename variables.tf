@@ -97,6 +97,7 @@ variable "use_canary" {
 variable "vault_secret" {
   type = object({
     use_vault_provider        = bool,
+    use_custom_vault_policy   = bool,
     vault_kv_policy_name      = string,
     vault_kv_path             = string,
     vault_kv_field_access_key = string,
@@ -105,6 +106,7 @@ variable "vault_secret" {
   description = "Set of properties to be able to fetch secret from vault"
   default = {
     use_vault_provider        = true
+    use_custom_vault_policy   = true
     vault_kv_policy_name      = "kv-secret"
     vault_kv_path             = "secret/data/minio"
     vault_kv_field_access_key = "access_key"

@@ -141,6 +141,7 @@ module "minio" {
 | buckets | List of buckets to create on startup | list(string) | [] | no |
 | use\_canary | Minio canary deployment | bool | true | no |
 | vault_secret.use_vault_provider | Set if want to access secrets from Vault | bool | true |
+| vault_secret.use_custom_vault_policy | Set if want to use a custom vault policy | bool | true | 
 | vault_secret.vault_kv_policy_name | Vault policy name to read secrets | string | "kv-secret" |
 | vault_secret.vault_kv_path | Path to the secret key in Vault | string | "secret/data/minio" |
 | vault_secret.vault_kv_field_access_key | Secret key name in Vault kv path | string | "access_key" |
@@ -182,6 +183,7 @@ module "minio" {
 ...
   vault_secret = {
                     use_vault_provider        = false,
+                    use_custom_vault_policy   = false,
                     vault_kv_path             = "",
                     vault_kv_field_access_key = "",
                     vault_kv_field_secret_key = ""
@@ -201,6 +203,7 @@ module "minio" {
 ...
   vault_secret  = {
                     use_vault_provider        = true,
+                    use_custom_vault_policy   = true,
                     vault_kv_policy_name      = "kv-secret"
                     vault_kv_path             = "secret/minio",
                     vault_kv_field_access_key = "access_key",
@@ -216,6 +219,7 @@ module "minio" {
 ...
   vault_secret  = {
                     use_vault_provider        = true,
+                    use_custom_vault_policy   = true,
                     vault_kv_policy_name      = "kv-users-secret"
                     vault_kv_path             = "secret/services/minio/users",
                     vault_kv_field_access_key = "alt_access_key",

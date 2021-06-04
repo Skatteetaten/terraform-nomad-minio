@@ -28,7 +28,7 @@ job "${service_name}" {
     task "mc-create-buckets" {
       driver = "docker"
 
-    %{ if use_vault_provider }
+    %{ if use_vault_provider && use_custom_vault_policy }
       vault {
         policies = "${vault_kv_policy_name}"
       }

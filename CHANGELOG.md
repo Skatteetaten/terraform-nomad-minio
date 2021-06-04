@@ -3,7 +3,7 @@
 ## [0.4.3 UNRELEASED]
 
 ### Added
-- Use boolean to toggle use of custom policy for vault provider 
+- Use boolean to toggle use of custom policy for vault provider
 
 ## [0.4.2]
 
